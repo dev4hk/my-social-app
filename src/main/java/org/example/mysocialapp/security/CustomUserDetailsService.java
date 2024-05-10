@@ -3,7 +3,6 @@ package org.example.mysocialapp.security;
 import lombok.RequiredArgsConstructor;
 import org.example.mysocialapp.entity.User;
 import org.example.mysocialapp.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -16,9 +15,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
-
-    @Value("${application.security.jwt.secret-key}")
-    public static String SECRET_KEY;
 
     private final UserRepository userRepository;
 

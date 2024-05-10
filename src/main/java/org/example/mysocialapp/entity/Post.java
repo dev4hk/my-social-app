@@ -1,6 +1,5 @@
 package org.example.mysocialapp.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 

@@ -3,7 +3,6 @@ package org.example.mysocialapp.security;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
-import org.example.mysocialapp.config.AppConfig;
 import org.springframework.security.core.Authentication;
 
 import javax.crypto.SecretKey;
