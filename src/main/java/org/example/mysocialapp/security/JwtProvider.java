@@ -27,8 +27,6 @@ public class JwtProvider {
 
     public static String getEmailFromJwtToken(String jwt) {
 
-        System.out.println("Secret Key = "  + JwtContant.SECRET_KEY);
-
         jwt = jwt.substring(7);
         Claims claims = Jwts
                 .parserBuilder()
