@@ -3,6 +3,7 @@ package org.example.mysocialapp.service;
 import lombok.RequiredArgsConstructor;
 import org.example.mysocialapp.entity.User;
 import org.example.mysocialapp.repository.UserRepository;
+import org.example.mysocialapp.security.JwtProvider;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -41,22 +42,31 @@ public class UserService {
         return userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
     }
 
-    public User followUser(Integer userId1, Integer userId2) {
-        User user1 = findUserById(userId1);
+    public User followUser(Integer reqUserId, Integer userId2) {
+        User reqUser = findUserById(reqUserId);
         User user2 = findUserById(userId2);
-        user2.getFollowers().add(user1.getId());
-        user1.getFollowings().add(user2.getId());
-        userRepository.save(user1);
+        user2.getFollowers().add(reqUser.getId());
+        reqUser.getFollowings().add(user2.getId());
+        userRepository.save(reqUser);
         userRepository.save(user2);
-        return user1;
+        return reqUser;
     }
 
     public User updateUser(User user, Integer userId) {
         User oldUser = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
-        oldUser.setEmail(user.getEmail());
-        oldUser.setFirstName(user.getFirstName());
-        oldUser.setLastName(user.getLastName());
-        oldUser.setPassword(user.getPassword());
+        if(user.getEmail() != null) {
+            oldUser.setEmail(user.getEmail());
+        }
+        if(user.getFirstName() != null) {
+            oldUser.setFirstName(user.getFirstName());
+        }
+        if(user.getLastName() != null) {
+            oldUser.setLastName(user.getLastName());
+        }
+        if(user.getGender() != null) {
+            oldUser.setGender(user.getGender());
+        }
+
         return userRepository.save(oldUser);
     }
 
@@ -68,6 +78,13 @@ public class UserService {
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
         userRepository.delete(user);
         return "User deleted";
+    }
+
+    public User findUserByJwt(String token) {
+        String email = JwtProvider.getEmailFromJwtToken(token);
+        User user =  userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+        user.setPassword(null);
+        return user;
     }
 
 }

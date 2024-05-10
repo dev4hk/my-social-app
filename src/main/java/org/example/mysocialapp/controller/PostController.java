@@ -2,8 +2,10 @@ package org.example.mysocialapp.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.example.mysocialapp.entity.Post;
+import org.example.mysocialapp.entity.User;
 import org.example.mysocialapp.response.ApiResponse;
 import org.example.mysocialapp.service.PostService;
+import org.example.mysocialapp.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,15 +18,18 @@ import java.util.List;
 public class PostController {
 
     private final PostService postService;
+    private final UserService userService;
 
-    @PostMapping("/user/{userId}")
-    public ResponseEntity<Post> createPost(@RequestBody Post post, @PathVariable Integer userId) {
-        return new ResponseEntity<>(postService.createNewPost(post, userId), HttpStatus.CREATED);
+    @PostMapping
+    public ResponseEntity<Post> createPost(@RequestBody Post post, @RequestHeader("Authorization") String token) {
+        User reqUser = userService.findUserByJwt(token);
+        return new ResponseEntity<>(postService.createNewPost(post, reqUser.getId()), HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/{postId}/user/{userId}")
-    public ResponseEntity<ApiResponse> deletePost(@PathVariable Integer postId, @PathVariable Integer userId) {
-        ApiResponse res = new ApiResponse(postService.deletePost(postId, userId), true);
+    @DeleteMapping("/{postId}")
+    public ResponseEntity<ApiResponse> deletePost(@PathVariable Integer postId, @RequestHeader("Authorization") String token) {
+        User reqUser = userService.findUserByJwt(token);
+        ApiResponse res = new ApiResponse(postService.deletePost(postId, reqUser.getId()), true);
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
@@ -43,14 +48,16 @@ public class PostController {
         return new ResponseEntity<>(postService.findAllPost(), HttpStatus.OK);
     }
 
-    @PutMapping("/save/{postId}/user/{userId}")
-    public ResponseEntity<Post> savePostById(@PathVariable Integer postId, @PathVariable Integer userId) {
-        return new ResponseEntity<>(postService.saveUnsavePost(postId, userId), HttpStatus.OK);
+    @PutMapping("/save/{postId}")
+    public ResponseEntity<Post> savePostById(@PathVariable Integer postId, @RequestHeader("Authorization") String token) {
+        User reqUser = userService.findUserByJwt(token);
+        return new ResponseEntity<>(postService.saveUnsavePost(postId, reqUser.getId()), HttpStatus.OK);
     }
 
-    @PutMapping("/like/{postId}/user/{userId}")
-    public ResponseEntity<Post> likePostById(@PathVariable Integer postId, @PathVariable Integer userId) {
-        return new ResponseEntity<>(postService.likeUnlikePost(postId, userId), HttpStatus.OK);
+    @PutMapping("/like/{postId}")
+    public ResponseEntity<Post> likePostById(@PathVariable Integer postId, @RequestHeader("Authorization") String token) {
+        User reqUser = userService.findUserByJwt(token);
+        return new ResponseEntity<>(postService.likeUnlikePost(postId, reqUser.getId()), HttpStatus.OK);
     }
 
 

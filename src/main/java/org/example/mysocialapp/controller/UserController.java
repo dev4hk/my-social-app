@@ -24,9 +24,10 @@ public class UserController {
         return userService.findUserById(userId);
     }
 
-    @PutMapping("/{userId}")
-    public User updateUser(@RequestBody User user, @PathVariable("userId") Integer userId) {
-        return userService.updateUser(user, userId);
+    @PutMapping
+    public User updateUser(@RequestBody User user, @RequestHeader("Authorization") String token) {
+        User reqUser = userService.findUserByJwt(token);
+        return userService.updateUser(user, reqUser.getId());
     }
 
     @DeleteMapping("/{userId}")
@@ -34,13 +35,19 @@ public class UserController {
         return userService.deleteUser(userId);
     }
 
-    @PutMapping("/follow/{userId1}/{userId2}")
-    public User followUserHandler(@PathVariable("userId1") Integer userId1, @PathVariable("userId2") Integer userId2) {
-        return userService.followUser(userId1, userId2);
+    @PutMapping("/follow/{userId2}")
+    public User followUserHandler(@RequestHeader("Authorization") String token, @PathVariable("userId2") Integer userId2) {
+        User reqUser = userService.findUserByJwt(token);
+        return userService.followUser(reqUser.getId(), userId2);
     }
 
     @GetMapping("/search")
     public List<User> searchUsers(@RequestParam("query") String query) {
         return userService.searchUsers(query);
+    }
+
+    @GetMapping("/profile")
+    public User getUserFromToken(@RequestHeader("Authorization") String token) {
+        return userService.findUserByJwt(token);
     }
 }
