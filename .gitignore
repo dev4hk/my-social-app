@@ -221,3 +221,4 @@ gradle-app.setting
 *.hprof
 
 # End of https://www.toptal.com/developers/gitignore/api/java,gradle,intellij+all,windows,macos,visualstudiocode
+src/main/java/org/example/mysocialapp/security/JwtContant.java
