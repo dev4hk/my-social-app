@@ -5,6 +5,7 @@ import org.example.mysocialapp.entity.User;
 import org.example.mysocialapp.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -19,6 +20,9 @@ public class UserService {
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
                 .password(user.getPassword())
+                .followers(new HashSet<>())
+                .followings(new HashSet<>())
+                .savedPosts(new HashSet<>())
                 .id(user.getId())
                 .build();
 
