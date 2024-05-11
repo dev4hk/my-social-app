@@ -3,6 +3,7 @@ package org.example.mysocialapp.controller;
 import lombok.RequiredArgsConstructor;
 import org.example.mysocialapp.entity.Reel;
 import org.example.mysocialapp.entity.User;
+import org.example.mysocialapp.exception.UserException;
 import org.example.mysocialapp.service.ReelService;
 import org.example.mysocialapp.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -20,7 +21,7 @@ public class ReelController {
     private final UserService userService;
 
     @PostMapping
-    public ResponseEntity<Reel> createReel(@RequestBody Reel reel, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<Reel> createReel(@RequestBody Reel reel, @RequestHeader("Authorization") String token) throws UserException {
         User user = userService.findUserByJwt(token);
         return new ResponseEntity<>(reelService.createReel(reel, user), HttpStatus.CREATED);
     }
@@ -31,7 +32,7 @@ public class ReelController {
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<Reel>> findUserReels(@PathVariable("userId") Integer userId) {
+    public ResponseEntity<List<Reel>> findUserReels(@PathVariable("userId") Integer userId) throws UserException {
         return new ResponseEntity<>(reelService.findUserReels(userId), HttpStatus.OK);
     }
 }

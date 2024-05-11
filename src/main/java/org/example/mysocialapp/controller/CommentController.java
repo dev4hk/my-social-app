@@ -3,6 +3,7 @@ package org.example.mysocialapp.controller;
 import lombok.RequiredArgsConstructor;
 import org.example.mysocialapp.entity.Comment;
 import org.example.mysocialapp.entity.User;
+import org.example.mysocialapp.exception.UserException;
 import org.example.mysocialapp.service.CommentService;
 import org.example.mysocialapp.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -22,7 +23,7 @@ public class CommentController {
             @PathVariable Integer postId,
             @RequestBody Comment comment,
             @RequestHeader("Authorization") String token
-    ) {
+    ) throws UserException {
         User user = userService.findUserByJwt(token);
         return new ResponseEntity<>(commentService.createComment(comment, postId, user.getId()), HttpStatus.CREATED);
     }
@@ -31,7 +32,7 @@ public class CommentController {
     public ResponseEntity<Comment> likeComment(
             @PathVariable Integer commentId,
             @RequestHeader("Authorization") String token
-    ) {
+    ) throws UserException {
         User user = userService.findUserByJwt(token);
         return new ResponseEntity<>(commentService.likeComment(commentId, user.getId()), HttpStatus.CREATED);
     }

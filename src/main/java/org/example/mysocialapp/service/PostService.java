@@ -3,6 +3,7 @@ package org.example.mysocialapp.service;
 import lombok.RequiredArgsConstructor;
 import org.example.mysocialapp.entity.Post;
 import org.example.mysocialapp.entity.User;
+import org.example.mysocialapp.exception.UserException;
 import org.example.mysocialapp.repository.PostRepository;
 import org.example.mysocialapp.repository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -18,7 +19,7 @@ public class PostService {
     private final UserService userService;
     private final UserRepository userRepository;
 
-    public Post createNewPost(Post post, Integer userId) {
+    public Post createNewPost(Post post, Integer userId) throws UserException {
         Post newPost = Post.builder()
                 .caption(post.getCaption())
                 .image(post.getImage())
@@ -29,7 +30,7 @@ public class PostService {
         return postRepository.save(newPost);
     }
 
-    public String deletePost(Integer postId, Integer userId) {
+    public String deletePost(Integer postId, Integer userId) throws UserException {
         Post post = findPostById(postId);
         User user = userService.findUserById(userId);
         if (!post.getUser().getId().equals(user.getId())) {
@@ -51,7 +52,7 @@ public class PostService {
         return postRepository.findAll();
     }
 
-    public Post saveUnsavePost(Integer postId, Integer userId) {
+    public Post saveUnsavePost(Integer postId, Integer userId) throws UserException {
         Post post = findPostById(postId);
         User user = userService.findUserById(userId);
         if(user.getSavedPosts().contains(post)) {
@@ -64,7 +65,7 @@ public class PostService {
         return post;
     }
 
-    public Post likeUnlikePost(Integer postId, Integer userId) {
+    public Post likeUnlikePost(Integer postId, Integer userId) throws UserException {
         Post post = findPostById(postId);
         User user = userService.findUserById(userId);
 

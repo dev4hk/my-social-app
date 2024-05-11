@@ -3,6 +3,7 @@ package org.example.mysocialapp.service;
 import lombok.RequiredArgsConstructor;
 import org.example.mysocialapp.entity.Story;
 import org.example.mysocialapp.entity.User;
+import org.example.mysocialapp.exception.UserException;
 import org.example.mysocialapp.repository.StoryRepository;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +27,7 @@ public class StoryService {
         return storyRepository.save(createdStory);
     }
 
-    public List<Story> findStoryByUserId(Integer userId) {
+    public List<Story> findStoryByUserId(Integer userId) throws UserException {
         userService.findUserById(userId);
         return storyRepository.findByUserId(userId);
     }

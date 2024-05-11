@@ -3,6 +3,7 @@ package org.example.mysocialapp.controller;
 import lombok.RequiredArgsConstructor;
 import org.example.mysocialapp.entity.Post;
 import org.example.mysocialapp.entity.User;
+import org.example.mysocialapp.exception.UserException;
 import org.example.mysocialapp.response.ApiResponse;
 import org.example.mysocialapp.service.PostService;
 import org.example.mysocialapp.service.UserService;
@@ -21,13 +22,13 @@ public class PostController {
     private final UserService userService;
 
     @PostMapping
-    public ResponseEntity<Post> createPost(@RequestBody Post post, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<Post> createPost(@RequestBody Post post, @RequestHeader("Authorization") String token) throws UserException {
         User reqUser = userService.findUserByJwt(token);
         return new ResponseEntity<>(postService.createNewPost(post, reqUser.getId()), HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{postId}")
-    public ResponseEntity<ApiResponse> deletePost(@PathVariable Integer postId, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<ApiResponse> deletePost(@PathVariable Integer postId, @RequestHeader("Authorization") String token) throws UserException {
         User reqUser = userService.findUserByJwt(token);
         ApiResponse res = new ApiResponse(postService.deletePost(postId, reqUser.getId()), true);
         return new ResponseEntity<>(res, HttpStatus.OK);
@@ -49,13 +50,13 @@ public class PostController {
     }
 
     @PutMapping("/save/{postId}")
-    public ResponseEntity<Post> savePostById(@PathVariable Integer postId, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<Post> savePostById(@PathVariable Integer postId, @RequestHeader("Authorization") String token) throws UserException {
         User reqUser = userService.findUserByJwt(token);
         return new ResponseEntity<>(postService.saveUnsavePost(postId, reqUser.getId()), HttpStatus.OK);
     }
 
     @PutMapping("/like/{postId}")
-    public ResponseEntity<Post> likePostById(@PathVariable Integer postId, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<Post> likePostById(@PathVariable Integer postId, @RequestHeader("Authorization") String token) throws UserException {
         User reqUser = userService.findUserByJwt(token);
         return new ResponseEntity<>(postService.likeUnlikePost(postId, reqUser.getId()), HttpStatus.OK);
     }

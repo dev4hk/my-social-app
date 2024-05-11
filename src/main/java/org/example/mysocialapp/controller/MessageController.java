@@ -3,6 +3,7 @@ package org.example.mysocialapp.controller;
 import lombok.RequiredArgsConstructor;
 import org.example.mysocialapp.entity.Message;
 import org.example.mysocialapp.entity.User;
+import org.example.mysocialapp.exception.UserException;
 import org.example.mysocialapp.service.MessageService;
 import org.example.mysocialapp.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -21,13 +22,13 @@ public class MessageController {
     private final UserService userService;
 
     @PostMapping("/chat/{chatId}")
-    public ResponseEntity<Message> createMessage(@RequestBody Message message, @RequestHeader("Authorization") String token, @PathVariable Integer chatId) {
+    public ResponseEntity<Message> createMessage(@RequestBody Message message, @RequestHeader("Authorization") String token, @PathVariable Integer chatId) throws UserException {
         User user = userService.findUserByJwt(token);
         return new ResponseEntity<>(messageService.createMessage(user, chatId, message), HttpStatus.CREATED);
     }
 
     @GetMapping("/chat/{chatId}")
-    public ResponseEntity<List<Message>> getMessages(@PathVariable Integer chatId, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<List<Message>> getMessages(@PathVariable Integer chatId, @RequestHeader("Authorization") String token) throws UserException {
         userService.findUserByJwt(token);
         return new ResponseEntity<>(messageService.findChatMessages(chatId), HttpStatus.OK);
     }

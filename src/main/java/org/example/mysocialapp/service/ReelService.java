@@ -3,6 +3,7 @@ package org.example.mysocialapp.service;
 import lombok.RequiredArgsConstructor;
 import org.example.mysocialapp.entity.Reel;
 import org.example.mysocialapp.entity.User;
+import org.example.mysocialapp.exception.UserException;
 import org.example.mysocialapp.repository.ReelRepository;
 import org.springframework.stereotype.Service;
 
@@ -30,7 +31,7 @@ public class ReelService {
         return reelRepository.findAll();
     }
 
-    public List<Reel> findUserReels(Integer userId) {
+    public List<Reel> findUserReels(Integer userId) throws UserException {
         userService.findUserById(userId);
         return reelRepository.findByUserId(userId);
     }

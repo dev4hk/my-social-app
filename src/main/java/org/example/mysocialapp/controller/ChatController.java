@@ -3,6 +3,7 @@ package org.example.mysocialapp.controller;
 import lombok.RequiredArgsConstructor;
 import org.example.mysocialapp.entity.Chat;
 import org.example.mysocialapp.entity.User;
+import org.example.mysocialapp.exception.UserException;
 import org.example.mysocialapp.request.CreateChatRequest;
 import org.example.mysocialapp.service.ChatService;
 import org.example.mysocialapp.service.UserService;
@@ -21,14 +22,14 @@ public class ChatController {
     private final UserService userService;
 
     @PostMapping
-    public ResponseEntity<Chat> createChat(@RequestBody CreateChatRequest request, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<Chat> createChat(@RequestBody CreateChatRequest request, @RequestHeader("Authorization") String token) throws UserException {
         User reqUser = userService.findUserByJwt(token);
         User user2 = userService.findUserById(request.getUserId());
         return new ResponseEntity<>(chatService.createChat(reqUser, user2), HttpStatus.CREATED);
     }
 
     @GetMapping
-    public ResponseEntity<List<Chat>> findUsersChat(@RequestHeader("Authorization") String token) {
+    public ResponseEntity<List<Chat>> findUsersChat(@RequestHeader("Authorization") String token) throws UserException {
         User user = userService.findUserByJwt(token);
         return new ResponseEntity<>(chatService.findUsersChat(user.getId()), HttpStatus.OK);
     }

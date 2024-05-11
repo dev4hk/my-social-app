@@ -2,6 +2,7 @@ package org.example.mysocialapp.service;
 
 import lombok.RequiredArgsConstructor;
 import org.example.mysocialapp.entity.User;
+import org.example.mysocialapp.exception.UserException;
 import org.example.mysocialapp.repository.UserRepository;
 import org.example.mysocialapp.security.JwtProvider;
 import org.springframework.stereotype.Service;
@@ -34,15 +35,15 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public User findUserById(Integer userId) {
-        return userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+    public User findUserById(Integer userId) throws UserException {
+        return userRepository.findById(userId).orElseThrow(() -> new UserException("User not found"));
     }
 
-    public User findUserByEmail(String email) {
-        return userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+    public User findUserByEmail(String email) throws UserException {
+        return userRepository.findByEmail(email).orElseThrow(() -> new UserException("User not found"));
     }
 
-    public User followUser(Integer reqUserId, Integer userId2) {
+    public User followUser(Integer reqUserId, Integer userId2) throws UserException {
         User reqUser = findUserById(reqUserId);
         User user2 = findUserById(userId2);
         user2.getFollowers().add(reqUser.getId());
@@ -52,8 +53,8 @@ public class UserService {
         return reqUser;
     }
 
-    public User updateUser(User user, Integer userId) {
-        User oldUser = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+    public User updateUser(User user, Integer userId) throws UserException {
+        User oldUser = userRepository.findById(userId).orElseThrow(() -> new UserException("User not found"));
         if(user.getEmail() != null) {
             oldUser.setEmail(user.getEmail());
         }
@@ -74,15 +75,15 @@ public class UserService {
         return userRepository.searchUser(query);
     }
 
-    public String deleteUser(Integer userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+    public String deleteUser(Integer userId) throws UserException {
+        User user = userRepository.findById(userId).orElseThrow(() -> new UserException("User not found"));
         userRepository.delete(user);
         return "User deleted";
     }
 
-    public User findUserByJwt(String token) {
+    public User findUserByJwt(String token) throws UserException {
         String email = JwtProvider.getEmailFromJwtToken(token);
-        User user =  userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+        User user =  userRepository.findByEmail(email).orElseThrow(() -> new UserException("User not found"));
         user.setPassword(null);
         return user;
     }

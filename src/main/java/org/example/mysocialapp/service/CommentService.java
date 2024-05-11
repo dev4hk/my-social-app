@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.mysocialapp.entity.Comment;
 import org.example.mysocialapp.entity.Post;
 import org.example.mysocialapp.entity.User;
+import org.example.mysocialapp.exception.UserException;
 import org.example.mysocialapp.repository.CommentRepository;
 import org.example.mysocialapp.repository.PostRepository;
 import org.springframework.stereotype.Service;
@@ -19,7 +20,7 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
 
-    public Comment createComment(Comment comment, Integer postId, Integer userId) {
+    public Comment createComment(Comment comment, Integer postId, Integer userId) throws UserException {
         User user = userService.findUserById(userId);
         Post post = postService.findPostById(postId);
         comment.setUser(user);
@@ -36,7 +37,7 @@ public class CommentService {
 
     }
 
-    public Comment likeComment(Integer commentId, Integer userId) {
+    public Comment likeComment(Integer commentId, Integer userId) throws UserException {
         Comment comment = findCommentById(commentId);
         User user = userService.findUserById(userId);
         if(!comment.getLiked().contains(user)) {
