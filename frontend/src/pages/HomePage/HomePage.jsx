@@ -1,12 +1,12 @@
 import { Grid } from "@mui/material";
 import React from "react";
-import Sidebar from "../../components/Sidebar";
 import { Route, Routes, useLocation } from "react-router-dom";
 import MiddlePart from "../../components/MiddlePart/MiddlePart";
 import CreateReelsForm from "../../components/Reels/CreateReelsForm";
 import Reels from "../../components/Reels/Reels";
 import Profile from "../Profile/Profile";
 import HomeRight from "../../components/HomeRight/HomeRight";
+import Sidebar from "../../components/SideBar/Sidebar";
 
 const HomePage = () => {
   const location = useLocation();
