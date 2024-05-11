@@ -1,42 +1,34 @@
 package org.example.mysocialapp.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
-@Builder
-@Table(name = "posts")
+@AllArgsConstructor
 @Entity
-public class Post {
+public class Comment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private String caption;
-
-    private String image;
-
-    private String video;
+    private String content;
 
     @ManyToOne
     private User user;
 
-    @OneToMany
-    private Set<User> likedBy = new HashSet<>();
+    @ManyToMany
+    private List<User> liked = new ArrayList<>();
 
     private LocalDateTime createdAt;
-
-    @OneToMany
-    private List<Comment> comments = new ArrayList<>();
 
 }

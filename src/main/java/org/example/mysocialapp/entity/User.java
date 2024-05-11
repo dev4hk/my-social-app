@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Getter
@@ -30,13 +31,13 @@ public class User {
     private String gender;
 
     @ElementCollection
-    private Set<Integer> followers;
+    private Set<Integer> followers = new HashSet<>();
 
     @ElementCollection
-    private Set<Integer> followings;
+    private Set<Integer> followings = new HashSet<>();
 
     @JsonIgnore
     @ManyToMany
-    private Set<Post> savedPosts;
+    private Set<Post> savedPosts = new HashSet<>();
 
 }
