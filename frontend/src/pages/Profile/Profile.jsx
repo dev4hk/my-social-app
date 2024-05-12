@@ -1,9 +1,10 @@
 import { Avatar, Box, Button, Card, Tab, Tabs } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import PostCard from "../../components/Post/PostCard";
 import UserReelCard from "../../components/Reels/UserReelCard";
 import { useSelector } from "react-redux";
+import ProfileModal from "./ProfileModal";
 
 const tabs = [
   { value: "post", name: "Post" },
@@ -28,6 +29,10 @@ const Profile = () => {
     setValue(newValue);
   };
 
+  const [open, setOpen] = useState(false);
+  const handleOpenProfileModal = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
   return (
     <Card className="my-10 w-[70%]">
       <div className="rounded-md">
@@ -45,7 +50,11 @@ const Profile = () => {
             sx={{ width: "10rem", height: "10rem" }}
           />
           {true ? (
-            <Button variant="outlined" sx={{ borderRadius: "20px" }}>
+            <Button
+              variant="outlined"
+              sx={{ borderRadius: "20px" }}
+              onClick={handleOpenProfileModal}
+            >
               Edit Profile
             </Button>
           ) : (
@@ -134,6 +143,9 @@ const Profile = () => {
           </div>
         </section>
       </div>
+      <section>
+        <ProfileModal open={open} handleClose={handleClose} />
+      </section>
     </Card>
   );
 };
