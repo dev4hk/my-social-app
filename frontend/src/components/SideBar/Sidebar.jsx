@@ -2,15 +2,24 @@ import React, { useState } from "react";
 import { navigationMenu } from "./SideBarNavigation";
 import { Avatar, Button, Card, Divider, Menu, MenuItem } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const Sidebar = () => {
+  const { auth } = useSelector((store) => store);
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
+  const navigate = useNavigate();
   const handleOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
   const handleClose = () => {
     setAnchorEl(null);
+  };
+  const handleNavigate = (item) => {
+    if (item.title === "Profile") {
+      navigate(`/profile/${auth.user?.id}`);
+    }
   };
 
   return (
@@ -24,6 +33,7 @@ const Sidebar = () => {
             <div
               key={index}
               className="flex space-x-3 items-center cursor-pointer"
+              onClick={() => handleNavigate(item)}
             >
               {item.icon}
               <p className="text-xl">{item.title}</p>
@@ -37,8 +47,15 @@ const Sidebar = () => {
           <div className="flex items-center space-x-3">
             <Avatar />
             <div>
-              <p className="font-bold">Username1</p>
-              <p className="opacity079">@username1</p>
+              <p className="font-bold">
+                {auth.user?.firstName + " " + auth.user?.lastName}
+              </p>
+              <p className="opacity079">
+                @
+                {auth.user?.firstName.toLowerCase() +
+                  "_" +
+                  auth.user?.lastName.toLowerCase()}
+              </p>
             </div>
           </div>
           <div>

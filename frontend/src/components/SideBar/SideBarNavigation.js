@@ -9,11 +9,11 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 
 export const navigationMenu = [
   { title: "Home", icon: <HomeIcon />, path: "/" },
-  { title: "Reels", icon: <ExploreIcon />, path: "/" },
-  { title: "Create Reels", icon: <ControlPointIcon />, path: "/" },
+  { title: "Reels", icon: <ExploreIcon />, path: "/reels" },
+  { title: "Create Reels", icon: <ControlPointIcon />, path: "/create-reels" },
   { title: "Notifications", icon: <NotificationsIcon />, path: "/" },
-  { title: "Message", icon: <MessageIcon />, path: "/" },
+  { title: "Message", icon: <MessageIcon />, path: "/message" },
   { title: "Lists", icon: <ListAltIcon />, path: "/" },
   { title: "Communities", icon: <GroupIcon />, path: "/" },
-  { title: "Profile", icon: <AccountCircleIcon />, path: "/" },
+  { title: "Profile", icon: <AccountCircleIcon />, path: "/profile" },
 ];
