@@ -5,8 +5,10 @@ import StoryCircle from "./StoryCircle";
 import ImageIcon from "@mui/icons-material/Image";
 import VideocamIcon from "@mui/icons-material/Videocam";
 import ArticleIcon from "@mui/icons-material/Article";
+import PostCard from "../Post/PostCard";
 
 const story = [1, 1, 1, 1, 1];
+const post = [1, 1, 1, 1, 1];
 
 const MiddlePart = () => {
   const handleOpenCreatePostModel = () => {
@@ -60,6 +62,12 @@ const MiddlePart = () => {
             </div>
           </div>
         </Card>
+      </section>
+
+      <section className="mt-5 space-y-5">
+        {post.map((item, index) => (
+          <PostCard key={index} />
+        ))}
       </section>
     </div>
   );
