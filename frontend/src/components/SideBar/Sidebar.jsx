@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { navigationMenu } from "./SideBarNavigation";
-import { Avatar, Button, Divider, Menu, MenuItem } from "@mui/material";
+import { Avatar, Button, Card, Divider, Menu, MenuItem } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 
 const Sidebar = () => {
@@ -14,7 +14,7 @@ const Sidebar = () => {
   };
 
   return (
-    <div className="card h-screen flex flex-col justify-between py-5">
+    <Card className="card h-screen flex flex-col justify-between py-5">
       <div className="space-y-8 pl-5">
         <div>
           <span className="logo font-bold text-xl">Sociable</span>
@@ -67,7 +67,7 @@ const Sidebar = () => {
           </div>
         </div>
       </div>
-    </div>
+    </Card>
   );
 };
 
