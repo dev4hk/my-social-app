@@ -31,7 +31,9 @@ const CreatePostModal = ({ handleClose, open }) => {
   const [selectedVideo, setSelectedVideo] = useState();
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSelectImage = () => {};
+  const handleSelectImage = (event) => {
+    console.log(event);
+  };
 
   const handleSelectVideo = () => {};
 
