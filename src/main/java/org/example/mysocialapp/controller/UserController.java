@@ -52,12 +52,12 @@ public class UserController {
 //        User reqUser = userService.findUserByJwt(token);
 //        return userService.updateUser(user, reqUser.getId());
 //    }
-
+    // TODO: Frontend needs to send user and multipart file
     @PutMapping
     public UserResponse updateUser(
             @RequestHeader("Authorization") String token,
             @RequestPart("user") User user,
-            @RequestPart("photo") MultipartFile photo
+            @RequestPart(value = "photo", required = false) MultipartFile photo
 
     ) throws UserException, SQLException, IOException {
         User reqUser = userService.findUserByJwt(token);

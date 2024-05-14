@@ -12,6 +12,8 @@ import { useFormik } from "formik";
 import React, { useState } from "react";
 import ImageIcon from "@mui/icons-material/Image";
 import VideocamIcon from "@mui/icons-material/Videocam";
+import { useDispatch } from "react-redux";
+import { createPostAction } from "../../redux/Post/post.action";
 
 const style = {
   position: "absolute",
@@ -27,28 +29,37 @@ const style = {
 };
 
 const CreatePostModal = ({ handleClose, open }) => {
-  const [selectedImage, setSelectedImage] = useState();
-  const [selectedVideo, setSelectedVideo] = useState();
   const [isLoading, setIsLoading] = useState(false);
+  const [filePreview, setFilePreview] = useState();
+  const [fileType, setFileType] = useState();
+  const dispatch = useDispatch();
 
-  const handleSelectImage = (event) => {
+  const handleSelectFile = (event) => {
     setIsLoading(true);
-    //TO DO
-  };
+    setFileType(event.target.files[0].type);
 
-  const handleSelectVideo = (event) => {
-    // TO DO
-    console.log(event)
+    const image = event.target.files[0];
+    formik.setFieldValue("file", image);
+    console.log(formik.values);
+    setFilePreview(URL.createObjectURL(image));
+    setIsLoading(false);
   };
 
   const formik = useFormik({
     initialValues: {
       caption: "",
-      image: "",
-      video: "",
+      file: "",
     },
     onSubmit: (values) => {
-      console.log("formik values ", values);
+      console.log(values.file);
+      const formData = new FormData();
+      formData.append("caption", values.caption);
+      formData.append("file", values.file);
+      // createPost(formData);
+      dispatch(createPostAction(formData));
+      setFilePreview("");
+      setFileType("");
+      formik.resetForm();
     },
   });
 
@@ -60,7 +71,7 @@ const CreatePostModal = ({ handleClose, open }) => {
       aria-describedby="modal-modal-description"
     >
       <Box sx={style}>
-        <form obSubmit={formik.handleSubmit}>
+        <form onSubmit={formik.handleSubmit}>
           <div>
             <div className="flex space-x-4 items-center">
               <Avatar />
@@ -83,12 +94,12 @@ const CreatePostModal = ({ handleClose, open }) => {
                 <input
                   type="file"
                   accept="image/*"
-                  onChange={handleSelectImage}
+                  onChange={handleSelectFile}
                   style={{ display: "none" }}
                   id="image-input"
                 />
                 <label htmlFor="image-input">
-                  <IconButton color="primary">
+                  <IconButton color="primary" component="span">
                     <ImageIcon />
                   </IconButton>
                 </label>
@@ -99,21 +110,28 @@ const CreatePostModal = ({ handleClose, open }) => {
                 <input
                   type="file"
                   accept="video/*"
-                  onChange={handleSelectVideo}
+                  onChange={handleSelectFile}
                   style={{ display: "none" }}
                   id="video-input"
                 />
                 <label htmlFor="video-input">
-                  <IconButton color="primary">
+                  <IconButton color="primary" component="span">
                     <VideocamIcon />
                   </IconButton>
                 </label>
                 <span>Video</span>
               </div>
             </div>
-            {selectedImage && (
-              <div>
-                <img className="h-[10rem]" src={selectedImage} alt="" />
+            {filePreview && fileType.includes("image") && (
+              <div className="flex justify-center my-8">
+                <img className="h-[15rem]" src={filePreview} alt="" />
+              </div>
+            )}
+            {filePreview && fileType.includes("video") && (
+              <div className="flex justify-center my-8">
+                <video className="h-[15rem]" controls>
+                  <source src={filePreview} type={fileType} />
+                </video>
               </div>
             )}
             <div className="flex w-full justify-end">
@@ -127,6 +145,7 @@ const CreatePostModal = ({ handleClose, open }) => {
             </div>
           </div>
         </form>
+
         <Backdrop
           sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
           open={isLoading}

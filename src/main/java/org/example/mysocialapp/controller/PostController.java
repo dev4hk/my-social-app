@@ -29,10 +29,16 @@ public class PostController {
 //        return new ResponseEntity<>(postService.createNewPost(post, reqUser.getId()), HttpStatus.CREATED);
 //    }
 
+//    @PostMapping
+//    public ResponseEntity<Post> createPost(@RequestPart("post") Post post, @RequestPart("file") MultipartFile file, @RequestHeader("Authorization") String token) throws UserException, IOException {
+//        User reqUser = userService.findUserByJwt(token);
+//        return new ResponseEntity<>(postService.createNewPost(post, file, reqUser.getId()), HttpStatus.CREATED);
+//    }
+
     @PostMapping
-    public ResponseEntity<Post> createPost(@RequestPart("post") Post post, @RequestPart("file") MultipartFile file, @RequestHeader("Authorization") String token) throws UserException, IOException {
+    public ResponseEntity<Post> createPost(@RequestParam("caption") String caption, @RequestParam("file") MultipartFile file, @RequestHeader("Authorization") String token) throws UserException, IOException {
         User reqUser = userService.findUserByJwt(token);
-        return new ResponseEntity<>(postService.createNewPost(post, file, reqUser.getId()), HttpStatus.CREATED);
+        return new ResponseEntity<>(postService.createNewPost(caption, file, reqUser.getId()), HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{postId}")

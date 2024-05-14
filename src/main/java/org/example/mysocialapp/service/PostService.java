@@ -41,7 +41,26 @@ public class PostService {
 //        return postRepository.save(newPost);
 //    }
 
-    public Post createNewPost(Post post, MultipartFile file, Integer userId) throws UserException, IOException {
+//    public Post createNewPost(Post post, MultipartFile file, Integer userId) throws UserException, IOException {
+//
+//        String filename = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
+//        String filePath = Directory + userId;
+//        Files.createDirectories(Paths.get(filePath));
+//        copy(file.getInputStream(), Paths.get(Directory + userId + "/" + filename), REPLACE_EXISTING);
+//
+//        Post newPost = Post.builder()
+//                .caption(post.getCaption())
+//                .fileName(filename)
+//                .createdAt(LocalDateTime.now())
+//                .user(userService.findUserById(userId))
+//                .contentType(file.getContentType())
+//                .filePath(filePath)
+//                .build();
+//
+//        return postRepository.save(newPost);
+//    }
+
+    public Post createNewPost(String caption, MultipartFile file, Integer userId) throws UserException, IOException {
 
         String filename = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
         String filePath = Directory + userId;
@@ -49,7 +68,7 @@ public class PostService {
         copy(file.getInputStream(), Paths.get(Directory + userId + "/" + filename), REPLACE_EXISTING);
 
         Post newPost = Post.builder()
-                .caption(post.getCaption())
+                .caption(caption)
                 .fileName(filename)
                 .createdAt(LocalDateTime.now())
                 .user(userService.findUserById(userId))
