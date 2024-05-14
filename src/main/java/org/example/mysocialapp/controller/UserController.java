@@ -3,7 +3,7 @@ package org.example.mysocialapp.controller;
 import lombok.RequiredArgsConstructor;
 import org.example.mysocialapp.entity.User;
 import org.example.mysocialapp.exception.UserException;
-import org.example.mysocialapp.response.UserUpdateResponse;
+import org.example.mysocialapp.response.UserResponse;
 import org.example.mysocialapp.service.UserService;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,13 +20,26 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping
-    public List<User> getUsers() {
-        return userService.findAllUsers();
+    public List<UserResponse> getUsers() {
+        return userService.findAllUsers().stream().map(user -> UserResponse.builder()
+                .id(user.getId())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .email(user.getEmail())
+                .gender(user.getGender())
+                .build()).toList();
     }
 
     @GetMapping("/{userId}")
-    public User getUser(@PathVariable("userId") Integer userId) throws UserException {
-        return userService.findUserById(userId);
+    public UserResponse getUser(@PathVariable("userId") Integer userId) throws UserException {
+        User user = userService.findUserById(userId);
+        return UserResponse.builder()
+                .id(user.getId())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .email(user.getEmail())
+                .gender(user.getGender())
+                .build();
     }
 
     @GetMapping("/{userId}/photo")
@@ -41,7 +54,7 @@ public class UserController {
 //    }
 
     @PutMapping
-    public UserUpdateResponse updateUser(
+    public UserResponse updateUser(
             @RequestHeader("Authorization") String token,
             @RequestPart("user") User user,
             @RequestPart("photo") MultipartFile photo
@@ -49,7 +62,7 @@ public class UserController {
     ) throws UserException, SQLException, IOException {
         User reqUser = userService.findUserByJwt(token);
         User created =  userService.updateUser(user, photo, reqUser.getId());
-        return UserUpdateResponse.builder()
+        return UserResponse.builder()
                 .id(created.getId())
                 .firstName(created.getFirstName())
                 .lastName(created.getLastName())
