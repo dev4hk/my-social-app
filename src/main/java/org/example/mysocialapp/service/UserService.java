@@ -1,12 +1,18 @@
 package org.example.mysocialapp.service;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.example.mysocialapp.entity.User;
 import org.example.mysocialapp.exception.UserException;
 import org.example.mysocialapp.repository.UserRepository;
 import org.example.mysocialapp.security.JwtProvider;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.sql.rowset.serial.SerialBlob;
+import java.io.IOException;
+import java.sql.Blob;
+import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.List;
 
@@ -88,4 +94,23 @@ public class UserService {
         return user;
     }
 
+    public String updateUserProfilePhoto(Integer userId, MultipartFile photo) throws SQLException, IOException, UserException {
+        User oldUser = userRepository.findById(userId).orElseThrow(() -> new UserException("User not found"));
+        if(!photo.isEmpty()) {
+            byte[] photoBytes = photo.getBytes();
+            Blob photoBlob = new SerialBlob(photoBytes);
+            oldUser.setPhoto(photoBlob);
+        }
+        userRepository.save(oldUser);
+        return "Photo Successfully Updated";
+    }
+
+    public String findUserPhotoById(Integer userId) throws UserException, SQLException {
+        User user = userRepository.findById(userId).orElseThrow(() -> new UserException("User not found"));
+        Blob userPhotoBlob = user.getPhoto();
+        if(userPhotoBlob != null) {
+            return Base64.encodeBase64String(userPhotoBlob.getBytes(1, (int)userPhotoBlob.length()));
+        }
+        return null;
+    }
 }

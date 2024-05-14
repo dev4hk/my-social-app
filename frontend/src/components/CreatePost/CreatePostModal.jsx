@@ -32,10 +32,14 @@ const CreatePostModal = ({ handleClose, open }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSelectImage = (event) => {
-    console.log(event);
+    setIsLoading(true);
+    //TO DO
   };
 
-  const handleSelectVideo = () => {};
+  const handleSelectVideo = (event) => {
+    // TO DO
+    console.log(event)
+  };
 
   const formik = useFormik({
     initialValues: {

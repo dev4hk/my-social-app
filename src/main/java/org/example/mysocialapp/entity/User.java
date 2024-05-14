@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.sql.Blob;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -29,6 +30,9 @@ public class User {
     private String password;
 
     private String gender;
+
+    @Lob
+    private Blob photo;
 
     @ElementCollection
     private Set<Integer> followers = new HashSet<>();

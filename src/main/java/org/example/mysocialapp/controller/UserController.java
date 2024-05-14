@@ -5,7 +5,10 @@ import org.example.mysocialapp.entity.User;
 import org.example.mysocialapp.exception.UserException;
 import org.example.mysocialapp.service.UserService;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -25,10 +28,21 @@ public class UserController {
         return userService.findUserById(userId);
     }
 
+    @GetMapping("/{userId}/photo")
+    public String getUserPhoto(@PathVariable("userId") Integer userId) throws UserException, SQLException {
+        return userService.findUserPhotoById(userId);
+    }
+
     @PutMapping
     public User updateUser(@RequestBody User user, @RequestHeader("Authorization") String token) throws UserException {
         User reqUser = userService.findUserByJwt(token);
         return userService.updateUser(user, reqUser.getId());
+    }
+
+    @PutMapping("/photo")
+    public String updateUserProfilePhoto(@RequestHeader("Authorization") String token, @RequestParam("photo") MultipartFile photo) throws UserException, SQLException, IOException {
+        User reqUser = userService.findUserByJwt(token);
+        return userService.updateUserProfilePhoto(reqUser.getId(), photo);
     }
 
     @DeleteMapping("/{userId}")
