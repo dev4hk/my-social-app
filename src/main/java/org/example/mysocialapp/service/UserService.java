@@ -6,6 +6,7 @@ import org.example.mysocialapp.entity.User;
 import org.example.mysocialapp.exception.UserException;
 import org.example.mysocialapp.repository.UserRepository;
 import org.example.mysocialapp.security.JwtProvider;
+import org.example.mysocialapp.util.ImageUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -97,7 +98,7 @@ public class UserService {
     public String updateUserProfilePhoto(Integer userId, MultipartFile photo) throws SQLException, IOException, UserException {
         User oldUser = userRepository.findById(userId).orElseThrow(() -> new UserException("User not found"));
         if(!photo.isEmpty()) {
-            byte[] photoBytes = photo.getBytes();
+            byte[] photoBytes = ImageUtils.compressImage(photo.getBytes());
             Blob photoBlob = new SerialBlob(photoBytes);
             oldUser.setPhoto(photoBlob);
         }
@@ -109,7 +110,7 @@ public class UserService {
         User user = userRepository.findById(userId).orElseThrow(() -> new UserException("User not found"));
         Blob userPhotoBlob = user.getPhoto();
         if(userPhotoBlob != null) {
-            return Base64.encodeBase64String(userPhotoBlob.getBytes(1, (int)userPhotoBlob.length()));
+            return Base64.encodeBase64String(ImageUtils.decompressImage(userPhotoBlob.getBytes(1, (int)userPhotoBlob.length())));
         }
         return null;
     }
