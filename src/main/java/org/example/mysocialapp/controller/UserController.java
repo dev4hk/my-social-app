@@ -3,6 +3,7 @@ package org.example.mysocialapp.controller;
 import lombok.RequiredArgsConstructor;
 import org.example.mysocialapp.entity.User;
 import org.example.mysocialapp.exception.UserException;
+import org.example.mysocialapp.response.UserUpdateResponse;
 import org.example.mysocialapp.service.UserService;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -33,10 +34,28 @@ public class UserController {
         return userService.findUserPhotoById(userId);
     }
 
+//    @PutMapping
+//    public User updateUser(@RequestBody User user, @RequestHeader("Authorization") String token) throws UserException {
+//        User reqUser = userService.findUserByJwt(token);
+//        return userService.updateUser(user, reqUser.getId());
+//    }
+
     @PutMapping
-    public User updateUser(@RequestBody User user, @RequestHeader("Authorization") String token) throws UserException {
+    public UserUpdateResponse updateUser(
+            @RequestHeader("Authorization") String token,
+            @RequestPart("user") User user,
+            @RequestPart("photo") MultipartFile photo
+
+    ) throws UserException, SQLException, IOException {
         User reqUser = userService.findUserByJwt(token);
-        return userService.updateUser(user, reqUser.getId());
+        User created =  userService.updateUser(user, photo, reqUser.getId());
+        return UserUpdateResponse.builder()
+                .id(created.getId())
+                .firstName(created.getFirstName())
+                .lastName(created.getLastName())
+                .email(created.getEmail())
+                .gender(created.getGender())
+                .build();
     }
 
     @PutMapping("/photo")

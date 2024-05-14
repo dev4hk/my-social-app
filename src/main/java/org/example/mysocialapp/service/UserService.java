@@ -60,7 +60,25 @@ public class UserService {
         return reqUser;
     }
 
-    public User updateUser(User user, Integer userId) throws UserException {
+//    public User updateUser(User user, Integer userId) throws UserException {
+//        User oldUser = userRepository.findById(userId).orElseThrow(() -> new UserException("User not found"));
+//        if(user.getEmail() != null) {
+//            oldUser.setEmail(user.getEmail());
+//        }
+//        if(user.getFirstName() != null) {
+//            oldUser.setFirstName(user.getFirstName());
+//        }
+//        if(user.getLastName() != null) {
+//            oldUser.setLastName(user.getLastName());
+//        }
+//        if(user.getGender() != null) {
+//            oldUser.setGender(user.getGender());
+//        }
+//
+//        return userRepository.save(oldUser);
+//    }
+
+    public User updateUser(User user, MultipartFile photo, Integer userId) throws UserException, IOException, SQLException {
         User oldUser = userRepository.findById(userId).orElseThrow(() -> new UserException("User not found"));
         if(user.getEmail() != null) {
             oldUser.setEmail(user.getEmail());
@@ -73,6 +91,11 @@ public class UserService {
         }
         if(user.getGender() != null) {
             oldUser.setGender(user.getGender());
+        }
+        if(!photo.isEmpty()) {
+            byte[] photoBytes = ImageUtils.compressImage(photo.getBytes());
+            Blob photoBlob = new SerialBlob(photoBytes);
+            oldUser.setPhoto(photoBlob);
         }
 
         return userRepository.save(oldUser);

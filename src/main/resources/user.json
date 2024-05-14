@@ -1,0 +1,7 @@
+{
+  "id" : 1,
+  "firstName" : "firstname",
+  "lastName" : "lastname",
+  "email": "firstname.lastname@email.com",
+  "gender": "FEMALE"
+}
