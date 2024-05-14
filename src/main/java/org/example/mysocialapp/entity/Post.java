@@ -24,9 +24,11 @@ public class Post {
 
     private String caption;
 
-    private String image;
+    private String fileName;
 
-    private String video;
+    private String filePath;
+
+    private String contentType;
 
     @ManyToOne
     private User user;

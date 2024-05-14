@@ -7,9 +7,18 @@ import org.example.mysocialapp.exception.UserException;
 import org.example.mysocialapp.repository.PostRepository;
 import org.example.mysocialapp.repository.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
+
+import static java.nio.file.Files.copy;
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 @RequiredArgsConstructor
 @Service
@@ -19,14 +28,35 @@ public class PostService {
     private final UserService userService;
     private final UserRepository userRepository;
 
-    public Post createNewPost(Post post, Integer userId) throws UserException {
+    public static final String Directory = System.getProperty("user.home") + "/Downloads/uploads/";
+
+//    public Post createNewPost(Post post, Integer userId) throws UserException {
+//        Post newPost = Post.builder()
+//                .caption(post.getCaption())
+//                .image(post.getImage())
+//                .createdAt(LocalDateTime.now())
+//                .video(post.getVideo())
+//                .user(userService.findUserById(userId))
+//                .build();
+//        return postRepository.save(newPost);
+//    }
+
+    public Post createNewPost(Post post, MultipartFile file, Integer userId) throws UserException, IOException {
+
+        String filename = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
+        String filePath = Directory + userId;
+        Files.createDirectories(Paths.get(filePath));
+        copy(file.getInputStream(), Paths.get(Directory + userId + "/" + filename), REPLACE_EXISTING);
+
         Post newPost = Post.builder()
                 .caption(post.getCaption())
-                .image(post.getImage())
+                .fileName(filename)
                 .createdAt(LocalDateTime.now())
-                .video(post.getVideo())
                 .user(userService.findUserById(userId))
+                .contentType(file.getContentType())
+                .filePath(filePath)
                 .build();
+
         return postRepository.save(newPost);
     }
 
@@ -55,10 +85,9 @@ public class PostService {
     public Post saveUnsavePost(Integer postId, Integer userId) throws UserException {
         Post post = findPostById(postId);
         User user = userService.findUserById(userId);
-        if(user.getSavedPosts().contains(post)) {
+        if (user.getSavedPosts().contains(post)) {
             user.getSavedPosts().remove(post);
-        }
-        else {
+        } else {
             user.getSavedPosts().add(post);
         }
         userRepository.save(user);

@@ -10,7 +10,9 @@ import org.example.mysocialapp.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -21,10 +23,16 @@ public class PostController {
     private final PostService postService;
     private final UserService userService;
 
+//    @PostMapping
+//    public ResponseEntity<Post> createPost(@RequestBody Post post, @RequestHeader("Authorization") String token) throws UserException {
+//        User reqUser = userService.findUserByJwt(token);
+//        return new ResponseEntity<>(postService.createNewPost(post, reqUser.getId()), HttpStatus.CREATED);
+//    }
+
     @PostMapping
-    public ResponseEntity<Post> createPost(@RequestBody Post post, @RequestHeader("Authorization") String token) throws UserException {
+    public ResponseEntity<Post> createPost(@RequestPart("post") Post post, @RequestPart("file") MultipartFile file, @RequestHeader("Authorization") String token) throws UserException, IOException {
         User reqUser = userService.findUserByJwt(token);
-        return new ResponseEntity<>(postService.createNewPost(post, reqUser.getId()), HttpStatus.CREATED);
+        return new ResponseEntity<>(postService.createNewPost(post, file, reqUser.getId()), HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{postId}")
