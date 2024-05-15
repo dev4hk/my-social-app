@@ -18,7 +18,8 @@ import ChatBubbleIcon from "@mui/icons-material/ChatBubble";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
 
-const PostCard = () => {
+const PostCard = ({ item }) => {
+  console.log(item);
   return (
     <Card>
       <CardHeader
@@ -32,20 +33,39 @@ const PostCard = () => {
             <MoreVertIcon />
           </IconButton>
         }
-        title="Username"
-        subheader="@Username"
+        title={item.user.firstName + " " + item.user.lastName}
+        subheader={
+          "@" +
+          item.user.firstName.toLowerCase() +
+          "_" +
+          item.user.lastName.toLowerCase()
+        }
       />
-      <CardMedia
-        component="img"
-        height="194"
-        image="https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_1280.jpg"
-        alt="Paella dish"
-      />
+      {item.contentType.includes("image") && (
+        <CardMedia
+          component="img"
+          height="194"
+          image={`data:${item.contentType};base64,${item.file}`}
+          alt=""
+        />
+        // <img
+        //   src={`data:${item.contentType};base64,${item.file}`}
+        //   alt="Room photo"
+        //   style={{ width: "100%", height: "200px" }}
+        // />
+      )}
+      {item.contentType.includes("video") && (
+        <CardMedia
+          component="video"
+          height="194"
+          image={`data:${item.contentType};base64,${item.file}`}
+          controls
+          alt=""
+        />
+      )}
       <CardContent>
         <Typography variant="body2" color="text.secondary">
-          This impressive paella is a perfect party dish and a fun meal to cook
-          together with your guests. Add 1 cup of frozen peas along with the
-          mussels, if you like.
+          {item.caption}
         </Typography>
       </CardContent>
 

@@ -6,14 +6,21 @@ import org.example.mysocialapp.entity.User;
 import org.example.mysocialapp.exception.UserException;
 import org.example.mysocialapp.repository.PostRepository;
 import org.example.mysocialapp.repository.UserRepository;
+import org.example.mysocialapp.response.PostResponse;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -30,36 +37,6 @@ public class PostService {
 
     public static final String Directory = System.getProperty("user.home") + "/Downloads/uploads/";
 
-//    public Post createNewPost(Post post, Integer userId) throws UserException {
-//        Post newPost = Post.builder()
-//                .caption(post.getCaption())
-//                .image(post.getImage())
-//                .createdAt(LocalDateTime.now())
-//                .video(post.getVideo())
-//                .user(userService.findUserById(userId))
-//                .build();
-//        return postRepository.save(newPost);
-//    }
-
-//    public Post createNewPost(Post post, MultipartFile file, Integer userId) throws UserException, IOException {
-//
-//        String filename = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
-//        String filePath = Directory + userId;
-//        Files.createDirectories(Paths.get(filePath));
-//        copy(file.getInputStream(), Paths.get(Directory + userId + "/" + filename), REPLACE_EXISTING);
-//
-//        Post newPost = Post.builder()
-//                .caption(post.getCaption())
-//                .fileName(filename)
-//                .createdAt(LocalDateTime.now())
-//                .user(userService.findUserById(userId))
-//                .contentType(file.getContentType())
-//                .filePath(filePath)
-//                .build();
-//
-//        return postRepository.save(newPost);
-//    }
-
     public Post createNewPost(String caption, MultipartFile file, Integer userId) throws UserException, IOException {
 
         String filename = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
@@ -73,7 +50,7 @@ public class PostService {
                 .createdAt(LocalDateTime.now())
                 .user(userService.findUserById(userId))
                 .contentType(file.getContentType())
-                .filePath(filePath)
+                .filePath(filePath + "/" + filename)
                 .build();
 
         return postRepository.save(newPost);
@@ -97,8 +74,33 @@ public class PostService {
         return postRepository.findById(postId).orElseThrow(() -> new RuntimeException("Post not found"));
     }
 
-    public List<Post> findAllPost() {
-        return postRepository.findAll();
+    public List<PostResponse> findAllPost() throws IOException {
+        List<PostResponse> responses = new ArrayList<>();
+        List<Post> posts = postRepository.findAll();
+        for(Post post : posts) {
+            Resource resource = null;
+            if(!post.getFilePath().isEmpty()) {
+                resource = getFile(post.getFilePath());
+            }
+            byte[] fileBytes = Objects.requireNonNull(resource).getContentAsByteArray();
+            PostResponse response = new PostResponse(
+                    post.getId(),
+                    post.getCaption(),
+                    post.getFileName(),
+                    fileBytes,
+                    post.getContentType(),
+                    post.getUser()
+            );
+            responses.add(response);
+        }
+        return responses;
+    }
+
+    private Resource getFile(String filePath) throws FileNotFoundException, MalformedURLException {
+        if(!Files.exists(Path.of(filePath))) {
+            throw new FileNotFoundException(filePath + " was not found.");
+        }
+        return new UrlResource(Path.of(filePath).toUri());
     }
 
     public Post saveUnsavePost(Integer postId, Integer userId) throws UserException {
