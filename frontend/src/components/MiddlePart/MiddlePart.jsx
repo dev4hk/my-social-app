@@ -21,7 +21,7 @@ const MiddlePart = () => {
   useEffect(() => {
     dispatch(getAllPostAction());
     console.log(post);
-  }, []);
+  }, [post.newComment]);
 
   const handleOpenCreatePostModal = () => {
     setOpenCreatePostModal(true);

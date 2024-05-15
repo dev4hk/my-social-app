@@ -1,5 +1,8 @@
 import { api } from "../../config/api";
 import {
+  CREATE_COMMENT_FAILURE,
+  CREATE_COMMENT_REQUEST,
+  CREATE_COMMENT_SUCCESS,
   CREATE_POST_FAILURE,
   CREATE_POST_REQUEST,
   CREATE_POST_SUCCESS,
@@ -61,5 +64,23 @@ export const likePostAction = (postId) => async (dispatch) => {
   } catch (error) {
     console.log(error);
     dispatch({ type: LIKE_POST_FAILURE, payload: error });
+  }
+};
+
+export const createCommentAction = (reqData) => async (dispatch) => {
+  dispatch({ type: CREATE_COMMENT_REQUEST });
+  try {
+    const { data } = await api.post(
+      `/api/comments/post/${reqData.postId}`,
+      reqData.data,
+      {
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+    dispatch({ type: CREATE_COMMENT_SUCCESS });
+    console.log("created comment ", data);
+  } catch (error) {
+    console.log(error);
+    dispatch({ type: CREATE_COMMENT_FAILURE, payload: error });
   }
 };

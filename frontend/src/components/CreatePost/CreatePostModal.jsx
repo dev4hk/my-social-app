@@ -55,7 +55,6 @@ const CreatePostModal = ({ handleClose, open }) => {
       const formData = new FormData();
       formData.append("caption", values.caption);
       formData.append("file", values.file);
-      // createPost(formData);
       dispatch(createPostAction(formData));
       setFilePreview("");
       setFileType("");
