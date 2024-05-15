@@ -60,7 +60,7 @@ public class PostController {
     }
 
     @PutMapping("/like/{postId}")
-    public ResponseEntity<Post> likePostById(@PathVariable Integer postId, @RequestHeader("Authorization") String token) throws UserException {
+    public ResponseEntity<PostResponse> likePostById(@PathVariable Integer postId, @RequestHeader("Authorization") String token) throws UserException, IOException {
         User reqUser = userService.findUserByJwt(token);
         return new ResponseEntity<>(postService.likeUnlikePost(postId, reqUser.getId()), HttpStatus.OK);
     }

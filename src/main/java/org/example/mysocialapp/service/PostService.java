@@ -78,30 +78,13 @@ public class PostService {
         List<PostResponse> responses = new ArrayList<>();
         List<Post> posts = postRepository.findAll();
         for(Post post : posts) {
-            Resource resource = null;
-            if(!post.getFilePath().isEmpty()) {
-                resource = getFile(post.getFilePath());
-            }
-            byte[] fileBytes = Objects.requireNonNull(resource).getContentAsByteArray();
-            PostResponse response = new PostResponse(
-                    post.getId(),
-                    post.getCaption(),
-                    post.getFileName(),
-                    fileBytes,
-                    post.getContentType(),
-                    post.getUser()
-            );
+            PostResponse response = new PostResponse(post);
             responses.add(response);
         }
         return responses;
     }
 
-    private Resource getFile(String filePath) throws FileNotFoundException, MalformedURLException {
-        if(!Files.exists(Path.of(filePath))) {
-            throw new FileNotFoundException(filePath + " was not found.");
-        }
-        return new UrlResource(Path.of(filePath).toUri());
-    }
+
 
     public Post saveUnsavePost(Integer postId, Integer userId) throws UserException {
         Post post = findPostById(postId);
@@ -115,7 +98,7 @@ public class PostService {
         return post;
     }
 
-    public Post likeUnlikePost(Integer postId, Integer userId) throws UserException {
+    public PostResponse likeUnlikePost(Integer postId, Integer userId) throws UserException, IOException {
         Post post = findPostById(postId);
         User user = userService.findUserById(userId);
 
@@ -125,6 +108,7 @@ public class PostService {
             post.getLikedBy().add(user);
         }
 
-        return postRepository.save(post);
+        Post created =  postRepository.save(post);
+        return new PostResponse(created);
     }
 }

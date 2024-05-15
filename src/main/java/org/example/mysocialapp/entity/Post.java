@@ -33,7 +33,7 @@ public class Post {
     @ManyToOne
     private User user;
 
-    @OneToMany
+    @ManyToMany
     private Set<User> likedBy = new HashSet<>();
 
     private LocalDateTime createdAt;
