@@ -23,7 +23,7 @@ export const createPostAction = (postData) => async (dispatch) => {
     const { data } = await api.post("/api/posts", postData, {
       headers: { "Content-Type": "multipart/form-data" },
     });
-    dispatch({ type: CREATE_POST_SUCCESS });
+    dispatch({ type: CREATE_POST_SUCCESS, payload: data });
     console.log("created post ", data);
   } catch (error) {
     console.log(error);
@@ -58,8 +58,8 @@ export const getUsersPostAction = (userId) => async (dispatch) => {
 export const likePostAction = (postId) => async (dispatch) => {
   dispatch({ type: LIKE_POST_REQUEST });
   try {
-    const { data } = await api.get(`/api/posts/like/${postId}`);
-    dispatch({ type: LIKE_POST_SUCCESS });
+    const { data } = await api.put(`/api/posts/like/${postId}`);
+    dispatch({ type: LIKE_POST_SUCCESS, payload: data });
     console.log("like post ", data);
   } catch (error) {
     console.log(error);

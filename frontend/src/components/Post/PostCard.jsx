@@ -19,11 +19,15 @@ import ChatBubbleIcon from "@mui/icons-material/ChatBubble";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
 import { useDispatch, useSelector } from "react-redux";
-import { createCommentAction } from "../../redux/Post/post.action";
+import {
+  createCommentAction,
+  likePostAction,
+} from "../../redux/Post/post.action";
+import { isLikedByReqUser } from "../../util/isLikedByReqUser";
 
 const PostCard = ({ item }) => {
   const [showComments, setShowComments] = useState(false);
-  const { post } = useSelector((store) => store);
+  const { post, auth } = useSelector((store) => store);
   const dispatch = useDispatch();
   const handleShowComments = () => {
     setShowComments(!showComments);
@@ -36,6 +40,10 @@ const PostCard = ({ item }) => {
       },
     };
     dispatch(createCommentAction(reqData));
+  };
+
+  const handleLikePost = () => {
+    dispatch(likePostAction(item.id));
   };
 
   return (
@@ -84,8 +92,12 @@ const PostCard = ({ item }) => {
 
       <CardActions className="flex justify-between" disableSpacing>
         <div>
-          <IconButton>
-            {true ? <FavoriteIcon /> : <FavoriteBorderIcon />}
+          <IconButton onClick={handleLikePost}>
+            {isLikedByReqUser(auth.user.id, item) ? (
+              <FavoriteIcon />
+            ) : (
+              <FavoriteBorderIcon />
+            )}
           </IconButton>
 
           <IconButton>
@@ -121,8 +133,8 @@ const PostCard = ({ item }) => {
           </div>
           <Divider />
           <div className="mx-3 space-y-2 my-5 text-sm">
-            {item.comments?.map((comment) => (
-              <div className="flex items-center space-x-5">
+            {item.comments?.map((comment, index) => (
+              <div key={index} className="flex items-center space-x-5">
                 <Avatar
                   sx={{ height: "2rem", width: "2rem", fontSize: ".8rem" }}
                 >
