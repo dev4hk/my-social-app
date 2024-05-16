@@ -6,14 +6,27 @@ import org.example.mysocialapp.entity.Message;
 import org.example.mysocialapp.entity.User;
 import org.example.mysocialapp.repository.ChatRepository;
 import org.example.mysocialapp.repository.MessageRepository;
+import org.example.mysocialapp.response.MessageResponse;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+
+import static java.nio.file.Files.copy;
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 @RequiredArgsConstructor
 @Service
 public class MessageService {
+
+    public static final String Directory = System.getProperty("user.home") + "/Downloads/uploads/";
 
     private final MessageRepository messageRepository;
 
@@ -21,12 +34,16 @@ public class MessageService {
 
     private final ChatRepository chatRepository;
 
-    public Message createMessage(User user, Integer chatId, Message req) {
+    public Message createMessage(User user, Integer chatId, String content, MultipartFile file) throws IOException {
         Chat chat = chatService.findChatById(chatId);
+        String filename = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
+        String filePath = Directory + user.getId() + "/chat/" + chatId;
+        Files.createDirectories(Paths.get(filePath));
+        copy(file.getInputStream(), Paths.get(filePath + "/" + filename), REPLACE_EXISTING);
         Message message = Message.builder()
                 .chat(chat)
-                .content(req.getContent())
-                .image(req.getImage())
+                .content(content)
+                .filePath(filePath + "/" + filename)
                 .user(user)
                 .timestamp(LocalDateTime.now())
                 .build();
@@ -36,9 +53,15 @@ public class MessageService {
         return savedMessage;
     }
 
-    public List<Message> findChatMessages(Integer chatId) {
+    public List<MessageResponse> findChatMessages(Integer chatId) throws IOException {
         chatService.findChatById(chatId);
-        return messageRepository.findByChatId(chatId);
+        List<Message> messages =  messageRepository.findByChatId(chatId);
+        List<MessageResponse> responses = new ArrayList<>();
+        for(Message message : messages) {
+            MessageResponse response = new MessageResponse(message);
+            responses.add(response);
+        }
+        return responses;
     }
 
 }

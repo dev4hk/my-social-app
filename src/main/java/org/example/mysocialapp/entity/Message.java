@@ -22,7 +22,11 @@ public class Message {
 
     private String content;
 
-    private String image;
+    private String fileName;
+
+    private String filePath;
+
+    private String contentType;
 
     @ManyToOne
     private User user;

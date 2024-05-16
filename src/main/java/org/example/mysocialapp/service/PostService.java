@@ -42,7 +42,7 @@ public class PostService {
         String filename = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
         String filePath = Directory + userId;
         Files.createDirectories(Paths.get(filePath));
-        copy(file.getInputStream(), Paths.get(Directory + userId + "/" + filename), REPLACE_EXISTING);
+        copy(file.getInputStream(), Paths.get(filePath + "/" + filename), REPLACE_EXISTING);
 
         Post newPost = Post.builder()
                 .caption(caption)
