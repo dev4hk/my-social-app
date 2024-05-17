@@ -56,6 +56,9 @@ public class FileUtils {
     }
 
     public static String loadFileString(String filePath) throws IOException {
+        if (filePath == null) {
+            return filePath;
+        }
         Resource resource = null;
         if(!filePath.isEmpty()) {
             resource = getResource(filePath);

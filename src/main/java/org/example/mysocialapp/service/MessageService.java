@@ -34,23 +34,38 @@ public class MessageService {
 
     private final ChatRepository chatRepository;
 
-    public Message createMessage(User user, Integer chatId, String content, MultipartFile file) throws IOException {
+    public MessageResponse createMessage(User user, Integer chatId, String content, MultipartFile file) throws IOException {
+        if(content == null && file == null) {
+            throw new RuntimeException("Cannot create message because content and file are empty");
+        }
+        if(Objects.requireNonNull(content).isBlank() && Objects.requireNonNull(file).getSize() == 0) {
+            throw new RuntimeException("Cannot create message because content and file are empty");
+        }
         Chat chat = chatService.findChatById(chatId);
-        String filename = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
-        String filePath = Directory + user.getId() + "/chat/" + chatId;
-        Files.createDirectories(Paths.get(filePath));
-        copy(file.getInputStream(), Paths.get(filePath + "/" + filename), REPLACE_EXISTING);
+        String filePath = null;
+        String filename = null;
+        String contentType = null;
+        if(file != null && file.getSize() != 0) {
+            filename = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
+            filePath = Directory + user.getId() + "/chat/" + chatId;
+            contentType = file.getContentType();
+            Files.createDirectories(Paths.get(filePath));
+            copy(file.getInputStream(), Paths.get(filePath + "/" + filename), REPLACE_EXISTING);
+        }
         Message message = Message.builder()
                 .chat(chat)
                 .content(content)
-                .filePath(filePath + "/" + filename)
                 .user(user)
+                .contentType(contentType)
                 .timestamp(LocalDateTime.now())
                 .build();
+        if(filePath != null) {
+            message.setFilePath(filePath + "/" + filename);
+        }
         Message savedMessage = messageRepository.save(message);
         chat.getMessages().add(savedMessage);
         chatRepository.save(chat);
-        return savedMessage;
+        return new MessageResponse(savedMessage);
     }
 
     public List<MessageResponse> findChatMessages(Integer chatId) throws IOException {

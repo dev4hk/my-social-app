@@ -21,7 +21,6 @@ public class MessageResponse {
     private String file;
     private String contentType;
     private User user;
-    private Chat chat;
     private LocalDateTime timestamp;
 
     public MessageResponse(Message message) throws IOException {
@@ -31,7 +30,6 @@ public class MessageResponse {
         this.file = loadFileString(message.getFilePath());
         this.contentType = message.getContentType();
         this.user = message.getUser();
-        this.chat = message.getChat();
         this.timestamp = message.getTimestamp();
     }
 

@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 @RequestMapping("/api/messages")
 @RequiredArgsConstructor
@@ -25,7 +26,12 @@ public class MessageController {
     private final UserService userService;
 
     @PostMapping("/chat/{chatId}")
-    public ResponseEntity<Message> createMessage(@RequestParam("content") String content, @RequestParam("file") MultipartFile file, @RequestHeader("Authorization") String token, @PathVariable Integer chatId) throws UserException, IOException {
+    public ResponseEntity<MessageResponse> createMessage(
+            @RequestParam(name = "content", required = false) String content,
+            @RequestParam(name = "file", required = false) MultipartFile file,
+            @RequestHeader("Authorization") String token,
+            @PathVariable Integer chatId)
+            throws UserException, IOException {
         User user = userService.findUserByJwt(token);
         return new ResponseEntity<>(messageService.createMessage(user, chatId, content, file), HttpStatus.CREATED);
     }

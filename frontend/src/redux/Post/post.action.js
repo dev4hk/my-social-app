@@ -84,3 +84,8 @@ export const createCommentAction = (reqData) => async (dispatch) => {
     dispatch({ type: CREATE_COMMENT_FAILURE, payload: error });
   }
 };
+
+export async function getMessagesInChat(chatId) {
+  const response = await api.get(`/api/messages/chat/${chatId}`);
+  return response.data;
+}

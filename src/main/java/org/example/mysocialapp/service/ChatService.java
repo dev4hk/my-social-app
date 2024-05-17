@@ -4,9 +4,12 @@ import lombok.RequiredArgsConstructor;
 import org.example.mysocialapp.entity.Chat;
 import org.example.mysocialapp.entity.User;
 import org.example.mysocialapp.repository.ChatRepository;
+import org.example.mysocialapp.response.ChatResponse;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,4 +42,14 @@ public class ChatService {
         return chatRepository.findByUsersId(userId);
     }
 
+//
+//    public List<ChatResponse> findUsersChat(Integer userId) throws IOException {
+//        List<Chat> chats =  chatRepository.findByUsersId(userId);
+//        List<ChatResponse> responses = new ArrayList<>();
+//        for(Chat chat : chats) {
+//            ChatResponse chatResponse = new ChatResponse(chat);
+//            responses.add(chatResponse);
+//        }
+//        return responses;
+//    }
 }
