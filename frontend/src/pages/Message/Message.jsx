@@ -80,7 +80,7 @@ const Message = () => {
                 <div>
                   <SearchUser />
                 </div>
-                <div className="h-full space-y-4 mt-5 overflow-y-scroll hideScrollbar">
+                <div className="h-full space-y-4 mt-5 overflow-y-scroll no-scrollbar">
                   {message.chats.map((item, index) => (
                     <div key={index} onClick={() => handleUserCardClick(item)}>
                       <UserChatCard chat={item} />
@@ -116,7 +116,7 @@ const Message = () => {
                   </IconButton>
                 </div>
               </div>
-              <div className="hideScrollbar overflow-y-scroll h-[82vh] px-2 space-y-5 py-5">
+              <div className="no-scrollbar overflow-y-scroll h-[82vh] px-2 space-y-5 py-5">
                 {messages.map((message, index) => (
                   <ChatMessage key={index} item={message} />
                 ))}
