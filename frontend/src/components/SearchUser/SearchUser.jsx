@@ -7,7 +7,7 @@ import { createChat } from "../../redux/Message/message.action";
 const SearchUser = () => {
   const [username, setUsername] = useState("");
   const dispatch = useDispatch();
-  const searchUser = useSelector((store) => store.auth.searchUser);
+  const reduxSearchUser = useSelector((store) => store.auth.searchUser);
   const handleSearchUser = (event) => {
     setUsername(event.target.value);
     dispatch(searchUser(username));
@@ -25,7 +25,7 @@ const SearchUser = () => {
           onKeyDown={handleSearchUser}
         />
         {username &&
-          searchUser.map((user) => (
+          reduxSearchUser.map((user) => (
             <Card
               key={user.id}
               className="absolute w-full z-10 top-[4.5rem] cursor-pointer"

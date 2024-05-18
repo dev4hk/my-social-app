@@ -12,24 +12,26 @@ import {
   GET_ALL_CHATS_SUCCESS,
 } from "./message.actionType";
 
-export const createMessage = (formData, chatId) => async (dispatch) => {
-  dispatch({ type: CREATE_MESSAGE_REQUEST });
-  try {
-    const { data } = await axios.post(
-      `${API_BASE_URL}/api/messages/chat/${chatId}`,
-      formData,
-      {
-        headers: {
-          Authorization: `Bearer ${getToken()}`,
-          "Content-Type": "multipart/form-data",
-        },
-      }
-    );
-    dispatch({ type: CREATE_MESSAGE_SUCCESS, payload: data });
-  } catch (error) {
-    dispatch({ type: CREATE_MESSAGE_FAILURE, payload: error });
-  }
-};
+export const createMessage =
+  (formData, chatId, sendMessageToServer) => async (dispatch) => {
+    dispatch({ type: CREATE_MESSAGE_REQUEST });
+    try {
+      const { data } = await axios.post(
+        `${API_BASE_URL}/api/messages/chat/${chatId}`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${getToken()}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      sendMessageToServer(data);
+      dispatch({ type: CREATE_MESSAGE_SUCCESS, payload: data });
+    } catch (error) {
+      dispatch({ type: CREATE_MESSAGE_FAILURE, payload: error });
+    }
+  };
 
 export const createChat = (chat) => async (dispatch) => {
   dispatch({ type: CREATE_CHAT_REQUEST });

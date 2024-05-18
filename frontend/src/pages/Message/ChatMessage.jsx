@@ -10,7 +10,9 @@ const ChatMessage = ({ item }) => {
   // const isReqUserMessage = auth.user?.id === item.user.id;
   return (
     <div
-      className={`flex text-white ${!userId ? "justify-start" : "justify-end"}`}
+      className={`flex text-white ${
+        item?.user?.id !== user.id ? "justify-start" : "justify-end"
+      }`}
     >
       <div
         className={`p-1 bg-[#191c29] ${

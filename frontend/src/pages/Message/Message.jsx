@@ -5,7 +5,7 @@ import {
   Grid,
   IconButton,
 } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import WestIcon from "@mui/icons-material/West";
 import AddIcCallIcon from "@mui/icons-material/AddIcCall";
 import VideoCallIcon from "@mui/icons-material/VideoCall";
@@ -21,17 +21,20 @@ import {
   getMessagesInChat,
 } from "../../redux/Message/message.action";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
+import SockJS from "sockjs-client";
+import Stomp from "stompjs";
 
 const Message = () => {
   const dispatch = useDispatch();
-  const { message, auth } = useSelector((store) => store);
-  const user = useSelector((store) => store.auth.user);
+  const reduxUser = useSelector((store) => store.auth.user);
   const reduxMessage = useSelector((store) => store.message.message);
+  const reduxChats = useSelector((store) => store.message.chats);
   const [currentChat, setCurrentChat] = useState();
   const [messages, setMessages] = useState([]);
   const [content, setContent] = useState("");
   const [selectedFile, setSelectedFile] = useState();
   const [isLoading, setIsLoading] = useState(false);
+  const chatContainerRef = useRef(null);
 
   const handleInputChange = (event) => {
     setContent(event.target.value);
@@ -50,6 +53,13 @@ const Message = () => {
     setMessages([...messages, reduxMessage]);
   }, [reduxMessage]);
 
+  useEffect(() => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop =
+        chatContainerRef.current.scrollHeight;
+    }
+  }, [messages]);
+
   const handleUserCardClick = (item) => {
     setIsLoading(true);
     setCurrentChat(item);
@@ -59,11 +69,53 @@ const Message = () => {
     });
   };
 
+  const [stompClient, setStompClient] = useState(null);
+
+  useEffect(() => {
+    const sock = new SockJS("http://localhost:8080/ws");
+    const stomp = Stomp.over(sock);
+    setStompClient(stomp);
+    stomp.connect({}, onConnect, onError);
+  }, []);
+
+  useEffect(() => {
+    if (stompClient && reduxUser && currentChat) {
+      const subscription = stompClient.subscribe(
+        `/user/${currentChat.id}/private`,
+        onMessageReceive
+      );
+    }
+  });
+
+  const sendMessageToServer = (newMessage) => {
+    if (stompClient && newMessage) {
+      stompClient.send(
+        `/app/chat/${currentChat.id.toString()}`,
+        {},
+        JSON.stringify(newMessage)
+      );
+    }
+  };
+
+  const onMessageReceive = (message) => {
+    const receivedMessage = JSON.parse(message.body);
+    console.log("message received from websocket...", receivedMessage);
+    setMessages([...messages, receivedMessage]);
+  };
+
+  const onConnect = () => {
+    console.log("websocket connected...");
+  };
+
+  const onError = (error) => {
+    console.log("websocket connect error...", error);
+  };
+
   const handleCreateMessage = () => {
     const formData = new FormData();
     formData.append("content", content);
     formData.append("file", selectedFile);
-    dispatch(createMessage(formData, currentChat.id));
+    dispatch(createMessage(formData, currentChat.id, sendMessageToServer));
     setContent("");
     setSelectedFile("");
   };
@@ -83,7 +135,7 @@ const Message = () => {
                   <SearchUser />
                 </div>
                 <div className="h-full space-y-4 mt-5 overflow-y-scroll no-scrollbar">
-                  {message.chats.map((item, index) => (
+                  {reduxChats.map((item, index) => (
                     <div key={index} onClick={() => handleUserCardClick(item)}>
                       <UserChatCard chat={item} />
                     </div>
@@ -100,7 +152,7 @@ const Message = () => {
                 <div className="flex items-center space-x-3">
                   <Avatar src="https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=800" />
                   <p>
-                    {user?.id === currentChat.users[0].id
+                    {reduxUser?.id === currentChat.users[0].id
                       ? currentChat.users[1].firstName +
                         " " +
                         currentChat.users[1].lastName
@@ -118,7 +170,10 @@ const Message = () => {
                   </IconButton>
                 </div>
               </div>
-              <div className="no-scrollbar overflow-y-scroll h-[82vh] px-2 space-y-5 py-5">
+              <div
+                className="no-scrollbar overflow-y-scroll h-[82vh] px-2 space-y-5 py-5"
+                ref={chatContainerRef}
+              >
                 {messages.map((message, index) => (
                   <ChatMessage key={index} item={message} />
                 ))}
