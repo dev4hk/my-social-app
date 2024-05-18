@@ -40,7 +40,6 @@ const CreatePostModal = ({ handleClose, open }) => {
 
     const image = event.target.files[0];
     formik.setFieldValue("file", image);
-    console.log(formik.values);
     setFilePreview(URL.createObjectURL(image));
     setIsLoading(false);
   };
@@ -51,7 +50,6 @@ const CreatePostModal = ({ handleClose, open }) => {
       file: "",
     },
     onSubmit: (values) => {
-      console.log(values.file);
       const formData = new FormData();
       formData.append("caption", values.caption);
       formData.append("file", values.file);

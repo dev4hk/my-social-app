@@ -6,6 +6,7 @@ import {
   GET_ALL_POST_FAILURE,
   GET_ALL_POST_REQUEST,
   GET_ALL_POST_SUCCESS,
+  GET_USERS_POST_SUCCESS,
   LIKE_POST_FAILURE,
   LIKE_POST_REQUEST,
   LIKE_POST_SUCCESS,
@@ -31,11 +32,12 @@ export const postReducer = (state = initialState, action) => {
       return {
         ...state,
         post: action.payload,
-        posts: [action.paylod, ...state.posts],
+        posts: [...state.posts, action.paylod],
         loading: false,
         error: null,
       };
     case GET_ALL_POST_SUCCESS:
+    case GET_USERS_POST_SUCCESS:
       return {
         ...state,
         posts: action.payload,
@@ -48,8 +50,6 @@ export const postReducer = (state = initialState, action) => {
         ...state,
         like: action.payload,
         posts: state.posts.map((item) => {
-          console.log("item = ", item);
-          console.log("action.payload = ", action.payload);
           return item.id === action.payload.id ? action.payload : item;
         }),
         loading: false,

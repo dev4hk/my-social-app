@@ -31,7 +31,6 @@ const Register = () => {
   const navigate = useNavigate();
   const handleSubmit = (values) => {
     values.gender = gender;
-    console.log(values);
     dispatch(registerUserAction({ data: values }));
   };
   const handleChange = (event) => {

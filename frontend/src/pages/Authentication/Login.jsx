@@ -18,7 +18,6 @@ const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const handleSubmit = (values) => {
-    console.log(values);
     dispatch(loginUserAction({ data: values }));
   };
   return (

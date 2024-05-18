@@ -42,11 +42,11 @@ const Message = () => {
 
   useEffect(() => {
     dispatch(getAllChats());
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     setMessages([...messages, message.message]);
-  }, [message.message]);
+  }, [message.message, messages]);
 
   const handleUserCardClick = (item) => {
     setIsLoading(true);

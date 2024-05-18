@@ -1,4 +1,5 @@
-import { api } from "../../config/api";
+import axios from "axios";
+import { API_BASE_URL, getToken } from "../../config/api";
 import {
   CREATE_CHAT_FAILURE,
   CREATE_CHAT_REQUEST,
@@ -13,15 +14,19 @@ import {
 
 export const createMessage = (formData, chatId) => async (dispatch) => {
   dispatch({ type: CREATE_MESSAGE_REQUEST });
-  console.log(formData.get("content"));
   try {
-    const { data } = await api.post(`/api/messages/chat/${chatId}`, formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
-    console.log("create message : ", data);
+    const { data } = await axios.post(
+      `${API_BASE_URL}/api/messages/chat/${chatId}`,
+      formData,
+      {
+        headers: {
+          Authorization: `Bearer ${getToken()}`,
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
     dispatch({ type: CREATE_MESSAGE_SUCCESS, payload: data });
   } catch (error) {
-    console.log("create message error : ", error);
     dispatch({ type: CREATE_MESSAGE_FAILURE, payload: error });
   }
 };
@@ -30,11 +35,14 @@ export const createChat = (chat) => async (dispatch) => {
   dispatch({ type: CREATE_CHAT_REQUEST });
 
   try {
-    const { data } = await api.post(`/api/chats`, chat);
-    console.log("create chat : ", data);
+    const { data } = await axios.post(`${API_BASE_URL}/api/chats`, chat, {
+      headers: {
+        Authorization: `Bearer ${getToken()}`,
+        "Content-Type": "application/json",
+      },
+    });
     dispatch({ type: CREATE_CHAT_SUCCESS, payload: data });
   } catch (error) {
-    console.log("create chat error : ", error);
     dispatch({ type: CREATE_CHAT_FAILURE, payload: error });
   }
 };
@@ -43,16 +51,25 @@ export const getAllChats = () => async (dispatch) => {
   dispatch({ type: GET_ALL_CHATS_REQUEST });
 
   try {
-    const { data } = await api.get(`/api/chats`);
-    console.log("get all chat : ", data);
+    const { data } = await axios.get(`${API_BASE_URL}/api/chats`, {
+      headers: {
+        Authorization: `Bearer ${getToken()}`,
+      },
+    });
     dispatch({ type: GET_ALL_CHATS_SUCCESS, payload: data });
   } catch (error) {
-    console.log("get all chat error : ", error);
     dispatch({ type: GET_ALL_CHATS_FAILURE, payload: error });
   }
 };
 
 export const getMessagesInChat = async (chatId) => {
-  const response = await api.get(`/api/messages/chat/${chatId}`);
+  const response = await axios.get(
+    `${API_BASE_URL}/api/messages/chat/${chatId}`,
+    {
+      headers: {
+        Authorization: `Bearer ${getToken()}`,
+      },
+    }
+  );
   return response.data;
 };

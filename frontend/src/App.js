@@ -8,12 +8,11 @@ import { useEffect } from "react";
 import { getProfileAction } from "./redux/Auth/auth.action";
 
 function App() {
-  const jwt = localStorage.getItem("jwt");
-  const dispatch = useDispatch();
   const { auth } = useSelector((store) => store);
+  const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(getProfileAction(jwt));
-  }, [jwt]);
+    dispatch(getProfileAction());
+  }, [auth.jwt]);
   return (
     <div className="">
       <Routes>

@@ -1,4 +1,5 @@
-import { api } from "../../config/api";
+import axios from "axios";
+import { API_BASE_URL, getToken } from "../../config/api";
 import {
   CREATE_COMMENT_FAILURE,
   CREATE_COMMENT_REQUEST,
@@ -20,13 +21,14 @@ import {
 export const createPostAction = (postData) => async (dispatch) => {
   dispatch({ type: CREATE_POST_REQUEST });
   try {
-    const { data } = await api.post("/api/posts", postData, {
-      headers: { "Content-Type": "multipart/form-data" },
+    const { data } = await axios.post(`${API_BASE_URL}/api/posts`, postData, {
+      headers: {
+        Authorization: `Bearer ${getToken()}`,
+        "Content-Type": "multipart/form-data",
+      },
     });
     dispatch({ type: CREATE_POST_SUCCESS, payload: data });
-    console.log("created post ", data);
   } catch (error) {
-    console.log(error);
     dispatch({ type: CREATE_POST_FAILURE, payload: error });
   }
 };
@@ -34,11 +36,13 @@ export const createPostAction = (postData) => async (dispatch) => {
 export const getAllPostAction = () => async (dispatch) => {
   dispatch({ type: GET_ALL_POST_REQUEST });
   try {
-    const { data } = await api.get("/api/posts");
+    const { data } = await axios.get(`${API_BASE_URL}/api/posts`, {
+      headers: {
+        Authorization: `Bearer ${getToken()}`,
+      },
+    });
     dispatch({ type: GET_ALL_POST_SUCCESS, payload: data });
-    console.log("get all posts ", data);
   } catch (error) {
-    console.log(error);
     dispatch({ type: GET_ALL_POST_FAILURE, payload: error });
   }
 };
@@ -46,11 +50,16 @@ export const getAllPostAction = () => async (dispatch) => {
 export const getUsersPostAction = (userId) => async (dispatch) => {
   dispatch({ type: GET_USERS_POST_REQUEST });
   try {
-    const { data } = await api.get(`/api/posts/user/${userId}`);
-    dispatch({ type: GET_USERS_POST_SUCCESS });
-    console.log("get users post ", data);
+    const { data } = await axios.get(
+      `${API_BASE_URL}/api/posts/user/${userId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${getToken()}`,
+        },
+      }
+    );
+    dispatch({ type: GET_USERS_POST_SUCCESS, payload: data });
   } catch (error) {
-    console.log(error);
     dispatch({ type: GET_USERS_POST_FAILURE, payload: error });
   }
 };
@@ -58,11 +67,17 @@ export const getUsersPostAction = (userId) => async (dispatch) => {
 export const likePostAction = (postId) => async (dispatch) => {
   dispatch({ type: LIKE_POST_REQUEST });
   try {
-    const { data } = await api.put(`/api/posts/like/${postId}`);
+    const { data } = await axios.put(
+      `${API_BASE_URL}/api/posts/like/${postId}`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${getToken()}`,
+        },
+      }
+    );
     dispatch({ type: LIKE_POST_SUCCESS, payload: data });
-    console.log("like post ", data);
   } catch (error) {
-    console.log(error);
     dispatch({ type: LIKE_POST_FAILURE, payload: error });
   }
 };
@@ -70,22 +85,30 @@ export const likePostAction = (postId) => async (dispatch) => {
 export const createCommentAction = (reqData) => async (dispatch) => {
   dispatch({ type: CREATE_COMMENT_REQUEST });
   try {
-    const { data } = await api.post(
-      `/api/comments/post/${reqData.postId}`,
+    const { data } = await axios.post(
+      `${API_BASE_URL}/api/comments/post/${reqData.postId}`,
       reqData.data,
       {
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          Authorization: `Bearer ${getToken()}`,
+          "Content-Type": "application/json",
+        },
       }
     );
     dispatch({ type: CREATE_COMMENT_SUCCESS });
-    console.log("created comment ", data);
   } catch (error) {
-    console.log(error);
     dispatch({ type: CREATE_COMMENT_FAILURE, payload: error });
   }
 };
 
 export async function getMessagesInChat(chatId) {
-  const response = await api.get(`/api/messages/chat/${chatId}`);
+  const response = await axios.get(
+    `${API_BASE_URL}/api/messages/chat/${chatId}`,
+    {
+      headers: {
+        Authorization: `Bearer ${getToken()}`,
+      },
+    }
+  );
   return response.data;
 }

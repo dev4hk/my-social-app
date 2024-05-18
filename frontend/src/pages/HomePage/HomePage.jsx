@@ -13,9 +13,11 @@ import { getProfileAction } from "../../redux/Auth/auth.action";
 const HomePage = () => {
   const location = useLocation();
   const dispatch = useDispatch();
-  const jwt = localStorage.getItem("jwt");
   const { auth } = useSelector((store) => store);
-  console.log(auth);
+
+  useEffect(() => {
+    dispatch(getProfileAction());
+  }, []);
 
   return (
     <div className="px-20">

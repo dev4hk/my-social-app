@@ -78,21 +78,38 @@ public class UserService {
 //        return userRepository.save(oldUser);
 //    }
 
-    public User updateUser(User user, MultipartFile photo, Integer userId) throws UserException, IOException, SQLException {
+//    public User updateUser(User user, MultipartFile photo, Integer userId) throws UserException, IOException, SQLException {
+//        User oldUser = userRepository.findById(userId).orElseThrow(() -> new UserException("User not found"));
+//        if(user.getEmail() != null) {
+//            oldUser.setEmail(user.getEmail());
+//        }
+//        if(user.getFirstName() != null) {
+//            oldUser.setFirstName(user.getFirstName());
+//        }
+//        if(user.getLastName() != null) {
+//            oldUser.setLastName(user.getLastName());
+//        }
+//        if(user.getGender() != null) {
+//            oldUser.setGender(user.getGender());
+//        }
+//        if(!photo.isEmpty()) {
+//            byte[] photoBytes = FileUtils.compressImage(photo.getBytes());
+//            Blob photoBlob = new SerialBlob(photoBytes);
+//            oldUser.setPhoto(photoBlob);
+//        }
+//
+//        return userRepository.save(oldUser);
+//    }
+
+    public User updateUser(String firstName, String lastName, MultipartFile photo, Integer userId) throws UserException, IOException, SQLException {
         User oldUser = userRepository.findById(userId).orElseThrow(() -> new UserException("User not found"));
-        if(user.getEmail() != null) {
-            oldUser.setEmail(user.getEmail());
+        if(firstName != null && !firstName.isBlank()) {
+            oldUser.setFirstName(firstName);
         }
-        if(user.getFirstName() != null) {
-            oldUser.setFirstName(user.getFirstName());
+        if(lastName != null && !lastName.isBlank()) {
+            oldUser.setLastName(lastName);
         }
-        if(user.getLastName() != null) {
-            oldUser.setLastName(user.getLastName());
-        }
-        if(user.getGender() != null) {
-            oldUser.setGender(user.getGender());
-        }
-        if(!photo.isEmpty()) {
+        if(photo != null && !photo.isEmpty() && photo.getSize() != 0) {
             byte[] photoBytes = FileUtils.compressImage(photo.getBytes());
             Blob photoBlob = new SerialBlob(photoBytes);
             oldUser.setPhoto(photoBlob);

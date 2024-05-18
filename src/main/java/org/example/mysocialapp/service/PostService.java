@@ -66,8 +66,14 @@ public class PostService {
         return "Post deleted";
     }
 
-    public List<Post> findPostsByUserId(Integer userId) {
-        return postRepository.findAllPostsByUserId(userId);
+    public List<PostResponse> findPostsByUserId(Integer userId) throws IOException {
+        List<Post> posts =  postRepository.findAllPostsByUserId(userId);
+        List<PostResponse> responses = new ArrayList<>();
+        for (Post post : posts) {
+            PostResponse postResponse = new PostResponse(post);
+            responses.add(postResponse);
+        }
+        return responses;
     }
 
     public Post findPostById(Integer postId) {

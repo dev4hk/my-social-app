@@ -27,12 +27,14 @@ public class ReelController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Reel>> findAllReels() {
+    public ResponseEntity<List<Reel>> findAllReels(@RequestHeader("Authorization") String token) throws UserException {
+        userService.findUserByJwt(token);
         return new ResponseEntity<>(reelService.findAllReels(), HttpStatus.OK);
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<Reel>> findUserReels(@PathVariable("userId") Integer userId) throws UserException {
+    public ResponseEntity<List<Reel>> findUserReels(@PathVariable("userId") Integer userId, @RequestHeader("Authorization") String token) throws UserException {
+        userService.findUserByJwt(token);
         return new ResponseEntity<>(reelService.findUserReels(userId), HttpStatus.OK);
     }
 }

@@ -5,10 +5,9 @@ import {
   IconButton,
   Modal,
   TextField,
-  Typography,
 } from "@mui/material";
 import { useFormik } from "formik";
-import React, { useState } from "react";
+import React from "react";
 import { useDispatch } from "react-redux";
 import CloseIcon from "@mui/icons-material/Close";
 import { updateUserAction } from "../../redux/Auth/auth.action";
@@ -29,18 +28,23 @@ const style = {
 
 const ProfileModal = ({ open, handleClose }) => {
   const dispatch = useDispatch();
-  const handleSubmit = (values) => {
-    console.log("values", values);
-  };
 
   const formik = useFormik({
     initialValues: {
       firstName: "",
       lastName: "",
     },
+    // onSubmit: (values) => {
+    //   const formData = new FormData();
+    //   formData.append("user", values);
+    //   formData.append("file", null);
+    //   dispatch(updateUserAction(formData));
+    // },
     onSubmit: (values) => {
-      console.log("values", values);
-      dispatch(updateUserAction(values));
+      const formData = new FormData();
+      formData.append("firstName", values.firstName);
+      formData.append("lastName", values.lastName);
+      dispatch(updateUserAction(formData));
     },
   });
 

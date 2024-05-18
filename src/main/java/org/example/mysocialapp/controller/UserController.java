@@ -20,7 +20,8 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping
-    public List<UserResponse> getUsers() {
+    public List<UserResponse> getUsers(@RequestHeader("Authorization") String token) throws UserException {
+        userService.findUserByJwt(token);
         return userService.findAllUsers().stream().map(user -> UserResponse.builder()
                 .id(user.getId())
                 .firstName(user.getFirstName())
@@ -31,7 +32,8 @@ public class UserController {
     }
 
     @GetMapping("/{userId}")
-    public UserResponse getUser(@PathVariable("userId") Integer userId) throws UserException {
+    public UserResponse getUser(@PathVariable("userId") Integer userId, @RequestHeader("Authorization") String token) throws UserException {
+        userService.findUserByJwt(token);
         User user = userService.findUserById(userId);
         return UserResponse.builder()
                 .id(user.getId())
@@ -43,7 +45,8 @@ public class UserController {
     }
 
     @GetMapping("/{userId}/photo")
-    public String getUserPhoto(@PathVariable("userId") Integer userId) throws UserException, SQLException {
+    public String getUserPhoto(@PathVariable("userId") Integer userId, @RequestHeader("Authorization") String token) throws UserException, SQLException {
+        userService.findUserByJwt(token);
         return userService.findUserPhotoById(userId);
     }
 
@@ -52,16 +55,17 @@ public class UserController {
 //        User reqUser = userService.findUserByJwt(token);
 //        return userService.updateUser(user, reqUser.getId());
 //    }
-    // TODO: Frontend needs to send user and multipart file
+
     @PutMapping
     public UserResponse updateUser(
             @RequestHeader("Authorization") String token,
-            @RequestPart("user") User user,
-            @RequestPart(value = "photo", required = false) MultipartFile photo
+            @RequestParam String firstName,
+            @RequestParam String lastName,
+            @RequestParam(required = false) MultipartFile photo
 
     ) throws UserException, SQLException, IOException {
         User reqUser = userService.findUserByJwt(token);
-        User created =  userService.updateUser(user, photo, reqUser.getId());
+        User created =  userService.updateUser(firstName, lastName, photo, reqUser.getId());
         return UserResponse.builder()
                 .id(created.getId())
                 .firstName(created.getFirstName())
@@ -78,7 +82,8 @@ public class UserController {
     }
 
     @DeleteMapping("/{userId}")
-    public String deleteUser(@PathVariable("userId") Integer userId) throws UserException {
+    public String deleteUser(@PathVariable("userId") Integer userId, @RequestHeader("Authorization") String token) throws UserException {
+        userService.findUserByJwt(token);
         return userService.deleteUser(userId);
     }
 
@@ -89,7 +94,8 @@ public class UserController {
     }
 
     @GetMapping("/search")
-    public List<User> searchUsers(@RequestParam("query") String query) {
+    public List<User> searchUsers(@RequestParam("query") String query, @RequestHeader("Authorization") String token) throws UserException {
+        userService.findUserByJwt(token);
         return userService.searchUsers(query);
     }
 

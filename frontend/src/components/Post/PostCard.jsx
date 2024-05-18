@@ -34,7 +34,7 @@ const PostCard = ({ item }) => {
   };
   const handleCreateComment = (content) => {
     const reqData = {
-      postId: item.id,
+      postId: item?.id,
       data: {
         content: content,
       },
@@ -43,7 +43,7 @@ const PostCard = ({ item }) => {
   };
 
   const handleLikePost = () => {
-    dispatch(likePostAction(item.id));
+    dispatch(likePostAction(item?.id));
   };
 
   return (
@@ -59,41 +59,41 @@ const PostCard = ({ item }) => {
             <MoreVertIcon />
           </IconButton>
         }
-        title={item.user.firstName + " " + item.user.lastName}
+        title={item?.user?.firstName + " " + item?.user?.lastName}
         subheader={
           "@" +
-          item.user.firstName.toLowerCase() +
+          item?.user?.firstName.toLowerCase() +
           "_" +
-          item.user.lastName.toLowerCase()
+          item?.user?.lastName.toLowerCase()
         }
       />
-      {item.contentType.includes("image") && (
+      {item?.contentType?.includes("image") && (
         <CardMedia
           component="img"
           height="194"
-          image={`data:${item.contentType};base64,${item.file}`}
+          image={`data:${item?.contentType};base64,${item?.file}`}
           alt=""
         />
       )}
-      {item.contentType.includes("video") && (
+      {item?.contentType?.includes("video") && (
         <CardMedia
           component="video"
           height="194"
-          image={`data:${item.contentType};base64,${item.file}`}
+          image={`data:${item?.contentType};base64,${item?.file}`}
           controls
           alt=""
         />
       )}
       <CardContent>
         <Typography variant="body2" color="text.secondary">
-          {item.caption}
+          {item?.caption}
         </Typography>
       </CardContent>
 
       <CardActions className="flex justify-between" disableSpacing>
         <div>
           <IconButton onClick={handleLikePost}>
-            {isLikedByReqUser(auth.user.id, item) ? (
+            {isLikedByReqUser(auth.user?.id, item) ? (
               <FavoriteIcon />
             ) : (
               <FavoriteBorderIcon />
@@ -133,14 +133,14 @@ const PostCard = ({ item }) => {
           </div>
           <Divider />
           <div className="mx-3 space-y-2 my-5 text-sm">
-            {item.comments?.map((comment, index) => (
+            {item?.comments?.map((comment, index) => (
               <div key={index} className="flex items-center space-x-5">
                 <Avatar
                   sx={{ height: "2rem", width: "2rem", fontSize: ".8rem" }}
                 >
-                  {comment.user.firstName[0]}
+                  {comment?.user?.firstName[0]}
                 </Avatar>
-                <p>{comment.content}</p>
+                <p>{comment?.content}</p>
               </div>
             ))}
           </div>

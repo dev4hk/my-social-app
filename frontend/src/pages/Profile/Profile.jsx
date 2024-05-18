@@ -1,10 +1,11 @@
 import { Avatar, Box, Button, Card, Tab, Tabs } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import PostCard from "../../components/Post/PostCard";
 import UserReelCard from "../../components/Reels/UserReelCard";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import ProfileModal from "./ProfileModal";
+import { getUsersPostAction } from "../../redux/Post/post.action";
 
 const tabs = [
   { value: "post", name: "Post" },
@@ -19,11 +20,12 @@ const savedPost = [1, 1, 1, 1];
 const reposts = [1, 1, 1, 1];
 
 const Profile = () => {
-  const { auth } = useSelector((store) => store);
+  const { post, auth } = useSelector((store) => store);
 
+  const dispatch = useDispatch();
   const { id } = useParams();
 
-  const [value, setValue] = React.useState("post");
+  const [value, setValue] = useState("post");
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -32,6 +34,12 @@ const Profile = () => {
   const [open, setOpen] = useState(false);
   const handleOpenProfileModal = () => setOpen(true);
   const handleClose = () => setOpen(false);
+
+  useEffect(() => {
+    dispatch(getUsersPostAction(id));
+  }, []);
+  console.log(post.posts);
+  console.log(auth.user);
 
   return (
     <Card className="my-10 w-[70%]">
@@ -102,12 +110,12 @@ const Profile = () => {
           <div className="flex justify-center">
             {value === "post" && (
               <div className="space-y-5 w-[70%] my-10">
-                {posts.map((item, index) => (
+                {post.posts.map((item, index) => (
                   <div
                     key={index}
                     className="border rounded-md border-slate-100"
                   >
-                    <PostCard />
+                    <PostCard item={item} />
                   </div>
                 ))}
               </div>
@@ -115,29 +123,29 @@ const Profile = () => {
 
             {value === "reels" && (
               <div className="flex flex-wrap gap-2 justify-center my-10">
-                {reels.map((item, index) => (
+                {/* {reels.map((item, index) => (
                   <UserReelCard key={index} />
-                ))}
+                ))} */}
               </div>
             )}
 
             {value === "saved" && (
               <div className="space-y-5 w-[70%] my-10">
-                {savedPost.map((item, index) => (
+                {/* {savedPost.map((item, index) => (
                   <div className="border rounded-md border-slate-100">
-                    <PostCard key={index} />
+                    <PostCard key={index} item={item} />
                   </div>
-                ))}
+                ))} */}
               </div>
             )}
 
             {value === "repost" && (
               <div className="space-y-5 w-[70%] my-10">
-                {reposts.map((item, index) => (
+                {/* {reposts.map((item, index) => (
                   <div className="border rounded-md border-slate-100">
-                    <PostCard key={index} />
+                    <PostCard key={index} item={item} />
                   </div>
-                ))}
+                ))} */}
               </div>
             )}
           </div>

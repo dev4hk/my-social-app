@@ -1,4 +1,3 @@
-import { searchUser } from "./auth.action";
 import {
   GET_PROFILE_REQUEST,
   GET_PROFILE_SUCCESS,

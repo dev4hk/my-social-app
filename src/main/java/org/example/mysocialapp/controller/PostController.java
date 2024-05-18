@@ -26,7 +26,11 @@ public class PostController {
     private final UserService userService;
 
     @PostMapping
-    public ResponseEntity<Post> createPost(@RequestParam("caption") String caption, @RequestParam("file") MultipartFile file, @RequestHeader("Authorization") String token) throws UserException, IOException {
+    public ResponseEntity<Post> createPost(
+            @RequestParam("caption") String caption,
+            @RequestParam("file") MultipartFile file,
+            @RequestHeader("Authorization") String token
+    ) throws UserException, IOException {
         User reqUser = userService.findUserByJwt(token);
         return new ResponseEntity<>(postService.createNewPost(caption, file, reqUser.getId()), HttpStatus.CREATED);
     }
@@ -39,17 +43,20 @@ public class PostController {
     }
 
     @GetMapping("/{postId}")
-    public ResponseEntity<Post> findPostById(@PathVariable Integer postId) {
+    public ResponseEntity<Post> findPostById(@PathVariable Integer postId, @RequestHeader("Authorization") String token) throws UserException {
+        userService.findUserByJwt(token);
         return new ResponseEntity<>(postService.findPostById(postId), HttpStatus.OK);
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<Post>> findPostsByUser(@PathVariable Integer userId) {
+    public ResponseEntity<List<PostResponse>> findPostsByUser(@PathVariable Integer userId, @RequestHeader("Authorization") String token) throws UserException, IOException {
+        userService.findUserByJwt(token);
         return new ResponseEntity<>(postService.findPostsByUserId(userId), HttpStatus.OK);
     }
 
     @GetMapping
-    public ResponseEntity<List<PostResponse>> findAllPosts() throws IOException {
+    public ResponseEntity<List<PostResponse>> findAllPosts(@RequestHeader("Authorization") String token) throws IOException, UserException {
+        userService.findUserByJwt(token);
         return new ResponseEntity<>(postService.findAllPost(), HttpStatus.OK);
     }
 
