@@ -20,7 +20,8 @@ const savedPost = [1, 1, 1, 1];
 const reposts = [1, 1, 1, 1];
 
 const Profile = () => {
-  const { post, auth } = useSelector((store) => store);
+  const reduxUser = useSelector((store) => store.auth.user);
+  const reduxPosts = useSelector((store) => store.post.posts);
 
   const dispatch = useDispatch();
   const { id } = useParams();
@@ -38,8 +39,6 @@ const Profile = () => {
   useEffect(() => {
     dispatch(getUsersPostAction(id));
   }, []);
-  console.log(post.posts);
-  console.log(auth.user);
 
   return (
     <Card className="my-10 w-[70%]">
@@ -74,13 +73,13 @@ const Profile = () => {
         <div className="p-5">
           <div>
             <h1 className="py-1 font-bold text-xl">
-              {auth.user?.firstName + " " + auth.user?.lastName}
+              {reduxUser?.firstName + " " + reduxUser?.lastName}
             </h1>
             <p>
               @
-              {auth.user?.firstName.toLowerCase() +
+              {reduxUser?.firstName.toLowerCase() +
                 "_" +
-                auth.user?.lastName.toLowerCase()}
+                reduxUser?.lastName.toLowerCase()}
             </p>
           </div>
           <div className="flex gap-2 item-center py-3">
@@ -110,7 +109,7 @@ const Profile = () => {
           <div className="flex justify-center">
             {value === "post" && (
               <div className="space-y-5 w-[70%] my-10">
-                {post.posts.map((item, index) => (
+                {reduxPosts.map((item, index) => (
                   <div
                     key={index}
                     className="border rounded-md border-slate-100"

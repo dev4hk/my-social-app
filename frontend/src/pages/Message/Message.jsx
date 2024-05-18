@@ -25,6 +25,8 @@ import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 const Message = () => {
   const dispatch = useDispatch();
   const { message, auth } = useSelector((store) => store);
+  const user = useSelector((store) => store.auth.user);
+  const reduxMessage = useSelector((store) => store.message.message);
   const [currentChat, setCurrentChat] = useState();
   const [messages, setMessages] = useState([]);
   const [content, setContent] = useState("");
@@ -42,11 +44,11 @@ const Message = () => {
 
   useEffect(() => {
     dispatch(getAllChats());
-  }, [dispatch]);
+  }, []);
 
   useEffect(() => {
-    setMessages([...messages, message.message]);
-  }, [message.message, messages]);
+    setMessages([...messages, reduxMessage]);
+  }, [reduxMessage]);
 
   const handleUserCardClick = (item) => {
     setIsLoading(true);
@@ -98,7 +100,7 @@ const Message = () => {
                 <div className="flex items-center space-x-3">
                   <Avatar src="https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=800" />
                   <p>
-                    {auth.user?.id === currentChat.users[0].id
+                    {user?.id === currentChat.users[0].id
                       ? currentChat.users[1].firstName +
                         " " +
                         currentChat.users[1].lastName

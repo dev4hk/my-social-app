@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 const Sidebar = () => {
-  const { auth } = useSelector((store) => store);
+  const reduxUser = useSelector((store) => store.auth.user);
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const navigate = useNavigate();
@@ -18,7 +18,7 @@ const Sidebar = () => {
   };
   const handleNavigate = (item) => {
     if (item.title === "Profile") {
-      navigate(`/profile/${auth.user?.id}`);
+      navigate(`/profile/${reduxUser?.id}`);
     } else {
       navigate(item.path);
     }
@@ -50,13 +50,13 @@ const Sidebar = () => {
             <Avatar />
             <div>
               <p className="font-bold">
-                {auth.user?.firstName + " " + auth.user?.lastName}
+                {reduxUser?.firstName + " " + reduxUser?.lastName}
               </p>
               <p className="opacity079">
                 @
-                {auth.user?.firstName.toLowerCase() +
+                {reduxUser?.firstName.toLowerCase() +
                   "_" +
-                  auth.user?.lastName.toLowerCase()}
+                  reduxUser?.lastName.toLowerCase()}
               </p>
             </div>
           </div>

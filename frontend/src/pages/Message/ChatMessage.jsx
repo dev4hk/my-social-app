@@ -2,11 +2,11 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
 const ChatMessage = ({ item }) => {
-  const { auth } = useSelector((store) => store);
+  const user = useSelector((store) => store.auth.user);
   const [userId, setUserId] = useState();
   useEffect(() => {
-    setUserId(auth.user.id);
-  }, [auth.user.id]);
+    setUserId(user.id);
+  }, [user.id]);
   // const isReqUserMessage = auth.user?.id === item.user.id;
   return (
     <div

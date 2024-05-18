@@ -13,7 +13,6 @@ import { getProfileAction } from "../../redux/Auth/auth.action";
 const HomePage = () => {
   const location = useLocation();
   const dispatch = useDispatch();
-  const { auth } = useSelector((store) => store);
 
   useEffect(() => {
     dispatch(getProfileAction());

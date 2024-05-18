@@ -30,7 +30,7 @@ const comments = ["comment1", "comment2", "comment3"];
 const PostCard = ({ item }) => {
   // const PostCard = () => {
   const [showComments, setShowComments] = useState(false);
-  const { post, auth } = useSelector((store) => store);
+  const user = useSelector((store) => store.auth.user);
   const dispatch = useDispatch();
   const handleShowComments = () => {
     setShowComments(!showComments);
@@ -108,7 +108,7 @@ const PostCard = ({ item }) => {
       <CardActions className="flex justify-between" disableSpacing>
         <div>
           <IconButton onClick={handleLikePost}>
-            {isLikedByReqUser(auth.user?.id, item) ? (
+            {isLikedByReqUser(user?.id, item) ? (
               // true
               <FavoriteIcon />
             ) : (
