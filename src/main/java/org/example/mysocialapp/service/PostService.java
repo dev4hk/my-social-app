@@ -37,7 +37,7 @@ public class PostService {
 
     public static final String Directory = System.getProperty("user.home") + "/Downloads/uploads/";
 
-    public Post createNewPost(String caption, MultipartFile file, Integer userId) throws UserException, IOException {
+    public PostResponse createNewPost(String caption, MultipartFile file, Integer userId) throws UserException, IOException {
 
         String filename = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
         String filePath = Directory + userId;
@@ -53,7 +53,8 @@ public class PostService {
                 .filePath(filePath + "/" + filename)
                 .build();
 
-        return postRepository.save(newPost);
+        Post created =  postRepository.save(newPost);
+        return new PostResponse(created);
     }
 
     public String deletePost(Integer postId, Integer userId) throws UserException {

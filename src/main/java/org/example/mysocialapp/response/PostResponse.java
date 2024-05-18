@@ -7,6 +7,7 @@ import org.example.mysocialapp.entity.Post;
 import org.example.mysocialapp.entity.User;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -33,7 +34,7 @@ public class PostResponse {
         this.contentType = post.getContentType();
         this.user = post.getUser();
         this.comments = post.getComments();
-        this.likedBy = post.getLikedBy();
+        this.likedBy = post.getLikedBy() != null ? post.getLikedBy() : new HashSet<>();
     }
 
 }

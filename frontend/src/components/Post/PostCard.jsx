@@ -10,7 +10,7 @@ import {
   Typography,
 } from "@mui/material";
 import { red } from "@mui/material/colors";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
@@ -25,7 +25,10 @@ import {
 } from "../../redux/Post/post.action";
 import { isLikedByReqUser } from "../../util/isLikedByReqUser";
 
+const comments = ["comment1", "comment2", "comment3"];
+
 const PostCard = ({ item }) => {
+  // const PostCard = () => {
   const [showComments, setShowComments] = useState(false);
   const { post, auth } = useSelector((store) => store);
   const dispatch = useDispatch();
@@ -41,10 +44,17 @@ const PostCard = ({ item }) => {
     };
     dispatch(createCommentAction(reqData));
   };
+  // const handleCreateComment = (content) => {
+  //   console.log("handleCreateComment");
+  // };
 
   const handleLikePost = () => {
     dispatch(likePostAction(item?.id));
   };
+
+  // const handleLikePost = () => {
+  //   console.log("handleLikePost");
+  // };
 
   return (
     <Card>
@@ -66,12 +76,16 @@ const PostCard = ({ item }) => {
           "_" +
           item?.user?.lastName.toLowerCase()
         }
+        // title={"Title Name"}
+        // subheader={"Subheader Name"}
       />
       {item?.contentType?.includes("image") && (
+        // true
         <CardMedia
           component="img"
           height="194"
           image={`data:${item?.contentType};base64,${item?.file}`}
+          // image="https://cdn.pixabay.com/photo/2022/11/29/11/30/lake-7624330_1280.jpg"
           alt=""
         />
       )}
@@ -87,6 +101,7 @@ const PostCard = ({ item }) => {
       <CardContent>
         <Typography variant="body2" color="text.secondary">
           {item?.caption}
+          {/* {"Caption"} */}
         </Typography>
       </CardContent>
 
@@ -94,6 +109,7 @@ const PostCard = ({ item }) => {
         <div>
           <IconButton onClick={handleLikePost}>
             {isLikedByReqUser(auth.user?.id, item) ? (
+              // true
               <FavoriteIcon />
             ) : (
               <FavoriteBorderIcon />
@@ -139,8 +155,10 @@ const PostCard = ({ item }) => {
                   sx={{ height: "2rem", width: "2rem", fontSize: ".8rem" }}
                 >
                   {comment?.user?.firstName[0]}
+                  {/* {"S"} */}
                 </Avatar>
                 <p>{comment?.content}</p>
+                {/* <p>{comment}</p> */}
               </div>
             ))}
           </div>

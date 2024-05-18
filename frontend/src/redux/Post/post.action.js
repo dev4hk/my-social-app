@@ -28,8 +28,10 @@ export const createPostAction = (postData) => async (dispatch) => {
       },
     });
     dispatch({ type: CREATE_POST_SUCCESS, payload: data });
+    console.log("create post success: ", data);
   } catch (error) {
     dispatch({ type: CREATE_POST_FAILURE, payload: error });
+    console.log("create post error", error);
   }
 };
 
@@ -42,8 +44,10 @@ export const getAllPostAction = () => async (dispatch) => {
       },
     });
     dispatch({ type: GET_ALL_POST_SUCCESS, payload: data });
+    console.log("get all posts success: ", data);
   } catch (error) {
     dispatch({ type: GET_ALL_POST_FAILURE, payload: error });
+    console.log("get all posts error: ", error);
   }
 };
 

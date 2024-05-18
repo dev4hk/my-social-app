@@ -32,7 +32,7 @@ export const postReducer = (state = initialState, action) => {
       return {
         ...state,
         post: action.payload,
-        posts: [...state.posts, action.paylod],
+        posts: [...state.posts, action.payload],
         loading: false,
         error: null,
       };

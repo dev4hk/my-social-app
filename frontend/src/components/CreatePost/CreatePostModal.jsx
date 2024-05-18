@@ -57,6 +57,7 @@ const CreatePostModal = ({ handleClose, open }) => {
       setFilePreview("");
       setFileType("");
       formik.resetForm();
+      handleClose();
     },
   });
 

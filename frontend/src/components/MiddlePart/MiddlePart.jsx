@@ -78,6 +78,9 @@ const MiddlePart = () => {
       </section>
 
       <section className="mt-5 space-y-5">
+        {/* {posts.map((index) => (
+          <PostCard key={index} />
+        ))} */}
         {post.posts.map((item, index) => (
           <PostCard key={index} item={item} />
         ))}
