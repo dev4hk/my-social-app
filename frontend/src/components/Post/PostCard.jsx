@@ -62,9 +62,11 @@ const PostCard = ({ item }) => {
   // };
 
   useEffect(() => {
-    getMediaResource(item.fileName, item.filePath).then((data) => {
-      setMedia(data);
-    });
+    if (item.fileName && item.filePath) {
+      getMediaResource(item.fileName, item.filePath).then((data) => {
+        setMedia(data);
+      });
+    }
   }, []);
 
   console.log(item);

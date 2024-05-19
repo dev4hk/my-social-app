@@ -1,6 +1,7 @@
 package org.example.mysocialapp.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.example.mysocialapp.entity.Message;
 import org.example.mysocialapp.response.MessageResponse;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -15,7 +16,7 @@ public class WebSocketChatController {
     private final SimpMessagingTemplate messagingTemplate;
 
     @MessageMapping("/chat/{groupId}")
-    public MessageResponse sendToUser(@Payload MessageResponse message, @DestinationVariable String groupId) {
+    public Message sendToUser(@Payload Message message, @DestinationVariable String groupId) {
         messagingTemplate.convertAndSendToUser(groupId, "/private", message);
         return message;
     }

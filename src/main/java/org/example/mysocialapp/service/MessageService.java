@@ -34,7 +34,7 @@ public class MessageService {
 
     private final ChatRepository chatRepository;
 
-    public MessageResponse createMessage(User user, Integer chatId, String content, MultipartFile file) throws IOException {
+    public Message createMessage(User user, Integer chatId, String content, MultipartFile file) throws IOException {
         if(content == null && file == null) {
             throw new RuntimeException("Cannot create message because content and file are empty");
         }
@@ -43,14 +43,14 @@ public class MessageService {
         }
         Chat chat = chatService.findChatById(chatId);
         String filePath = null;
-        String filename = null;
+        String fileName = null;
         String contentType = null;
         if(file != null && file.getSize() != 0) {
-            filename = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
+            fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
             filePath = Directory + user.getId() + "/chat/" + chatId;
             contentType = file.getContentType();
             Files.createDirectories(Paths.get(filePath));
-            copy(file.getInputStream(), Paths.get(filePath + "/" + filename), REPLACE_EXISTING);
+            copy(file.getInputStream(), Paths.get(filePath + "/" + fileName), REPLACE_EXISTING);
         }
         Message message = Message.builder()
                 .chat(chat)
@@ -59,24 +59,21 @@ public class MessageService {
                 .contentType(contentType)
                 .timestamp(LocalDateTime.now())
                 .build();
+
         if(filePath != null) {
-            message.setFilePath(filePath + "/" + filename);
+            message.setFilePath(filePath + "/" + fileName);
+            message.setFileName(fileName);
         }
+
         Message savedMessage = messageRepository.save(message);
         chat.getMessages().add(savedMessage);
         chatRepository.save(chat);
-        return new MessageResponse(savedMessage);
+        return savedMessage;
     }
 
-    public List<MessageResponse> findChatMessages(Integer chatId) throws IOException {
+    public List<Message> findChatMessages(Integer chatId) {
         chatService.findChatById(chatId);
-        List<Message> messages =  messageRepository.findByChatId(chatId);
-        List<MessageResponse> responses = new ArrayList<>();
-        for(Message message : messages) {
-            MessageResponse response = new MessageResponse(message);
-            responses.add(response);
-        }
-        return responses;
+        return messageRepository.findByChatId(chatId);
     }
 
 }

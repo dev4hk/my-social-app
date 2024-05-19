@@ -26,7 +26,7 @@ public class MessageController {
     private final UserService userService;
 
     @PostMapping("/chat/{chatId}")
-    public ResponseEntity<MessageResponse> createMessage(
+    public ResponseEntity<Message> createMessage(
             @RequestParam(name = "content", required = false) String content,
             @RequestParam(name = "file", required = false) MultipartFile file,
             @RequestHeader("Authorization") String token,
@@ -37,7 +37,7 @@ public class MessageController {
     }
 
     @GetMapping("/chat/{chatId}")
-    public ResponseEntity<List<MessageResponse>> getMessages(@PathVariable Integer chatId, @RequestHeader("Authorization") String token) throws UserException, IOException {
+    public ResponseEntity<List<Message>> getMessages(@PathVariable Integer chatId, @RequestHeader("Authorization") String token) throws UserException {
         userService.findUserByJwt(token);
         return new ResponseEntity<>(messageService.findChatMessages(chatId), HttpStatus.OK);
     }
