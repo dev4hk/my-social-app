@@ -21,15 +21,19 @@ import BookmarkIcon from "@mui/icons-material/Bookmark";
 import { useDispatch, useSelector } from "react-redux";
 import {
   createCommentAction,
+  getMediaResource,
   likePostAction,
 } from "../../redux/Post/post.action";
 import { isLikedByReqUser } from "../../util/isLikedByReqUser";
+import { API_BASE_URL } from "../../config/api";
+import { generateMediaURL } from "../../util/urlUtil";
 
 const comments = ["comment1", "comment2", "comment3"];
 
 const PostCard = ({ item }) => {
   // const PostCard = () => {
   const [showComments, setShowComments] = useState(false);
+  const [media, setMedia] = useState();
   const user = useSelector((store) => store.auth.user);
   const dispatch = useDispatch();
   const handleShowComments = () => {
@@ -44,6 +48,7 @@ const PostCard = ({ item }) => {
     };
     dispatch(createCommentAction(reqData));
   };
+  console.log(item);
   // const handleCreateComment = (content) => {
   //   console.log("handleCreateComment");
   // };
@@ -56,6 +61,14 @@ const PostCard = ({ item }) => {
   //   console.log("handleLikePost");
   // };
 
+  useEffect(() => {
+    getMediaResource(item.fileName, item.filePath).then((data) => {
+      setMedia(data);
+    });
+  }, []);
+
+  console.log(item);
+  console.log(encodeURI(generateMediaURL(item.fileName, item.filePath)));
   return (
     <Card>
       <CardHeader
@@ -84,8 +97,9 @@ const PostCard = ({ item }) => {
         <CardMedia
           component="img"
           height="194"
-          image={`data:${item?.contentType};base64,${item?.file}`}
-          // image="https://cdn.pixabay.com/photo/2022/11/29/11/30/lake-7624330_1280.jpg"
+          image={`data:${item?.contentType};base64,${media}`}
+          // image={`data:${item?.contentType};base64,${item?.file}`}
+          // image={encodeURI(generateMediaURL(item.fileName, item.filePath))}
           alt=""
         />
       )}
@@ -93,7 +107,8 @@ const PostCard = ({ item }) => {
         <CardMedia
           component="video"
           height="194"
-          image={`data:${item?.contentType};base64,${item?.file}`}
+          image={`data:${item?.contentType};base64,${media}`}
+          // image={encodeURI(generateMediaURL(item.fileName, item.filePath))}
           controls
           alt=""
         />
@@ -108,7 +123,7 @@ const PostCard = ({ item }) => {
       <CardActions className="flex justify-between" disableSpacing>
         <div>
           <IconButton onClick={handleLikePost}>
-            {isLikedByReqUser(user?.id, item) ? (
+            {item.likedBy && isLikedByReqUser(user?.id, item) ? (
               // true
               <FavoriteIcon />
             ) : (

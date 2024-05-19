@@ -5,6 +5,7 @@ import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
+import org.springframework.web.socket.config.annotation.WebSocketTransportRegistration;
 
 @Configuration
 @EnableWebSocketMessageBroker
@@ -25,4 +26,11 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         registry.setUserDestinationPrefix("/user");
     }
 
+    @Override
+    public void configureWebSocketTransport(WebSocketTransportRegistration registry) {
+        WebSocketMessageBrokerConfigurer.super.configureWebSocketTransport(registry);
+        registry.setMessageSizeLimit(Integer.MAX_VALUE);
+        registry.setSendTimeLimit(Integer.MAX_VALUE);
+        registry.setSendBufferSizeLimit(Integer.MAX_VALUE);
+    }
 }

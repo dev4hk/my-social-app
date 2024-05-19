@@ -116,3 +116,20 @@ export async function getMessagesInChat(chatId) {
   );
   return response.data;
 }
+
+export const getMediaResource = async (fileName, filePath) => {
+  const formData = new FormData();
+  formData.append("fileName", fileName);
+  formData.append("filePath", filePath);
+  const response = await axios.post(
+    `${API_BASE_URL}/api/load-media`,
+    formData,
+    {
+      headers: {
+        Authorization: `Bearer ${getToken()}`,
+        "Content-Type": "application/json",
+      },
+    }
+  );
+  return response.data;
+};

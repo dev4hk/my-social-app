@@ -26,7 +26,7 @@ public class PostController {
     private final UserService userService;
 
     @PostMapping
-    public ResponseEntity<PostResponse> createPost(
+    public ResponseEntity<Post> createPost(
             @RequestParam("caption") String caption,
             @RequestParam("file") MultipartFile file,
             @RequestHeader("Authorization") String token
@@ -55,7 +55,7 @@ public class PostController {
     }
 
     @GetMapping
-    public ResponseEntity<List<PostResponse>> findAllPosts(@RequestHeader("Authorization") String token) throws IOException, UserException {
+    public ResponseEntity<List<Post>> findAllPosts(@RequestHeader("Authorization") String token) throws IOException, UserException {
         userService.findUserByJwt(token);
         return new ResponseEntity<>(postService.findAllPost(), HttpStatus.OK);
     }

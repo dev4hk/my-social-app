@@ -98,6 +98,7 @@ const Message = () => {
   };
 
   const onMessageReceive = (message) => {
+    console.log("received message...", message);
     const receivedMessage = JSON.parse(message.body);
     console.log("message received from websocket...", receivedMessage);
     setMessages([...messages, receivedMessage]);

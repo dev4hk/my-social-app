@@ -37,7 +37,27 @@ public class PostService {
 
     public static final String Directory = System.getProperty("user.home") + "/Downloads/uploads/";
 
-    public PostResponse createNewPost(String caption, MultipartFile file, Integer userId) throws UserException, IOException {
+//    public PostResponse createNewPost(String caption, MultipartFile file, Integer userId) throws UserException, IOException {
+//
+//        String filename = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
+//        String filePath = Directory + userId;
+//        Files.createDirectories(Paths.get(filePath));
+//        copy(file.getInputStream(), Paths.get(filePath + "/" + filename), REPLACE_EXISTING);
+//
+//        Post newPost = Post.builder()
+//                .caption(caption)
+//                .fileName(filename)
+//                .createdAt(LocalDateTime.now())
+//                .user(userService.findUserById(userId))
+//                .contentType(file.getContentType())
+//                .filePath(filePath + "/" + filename)
+//                .build();
+//
+//        Post created =  postRepository.save(newPost);
+//        return new PostResponse(created);
+//    }
+
+    public Post createNewPost(String caption, MultipartFile file, Integer userId) throws UserException, IOException {
 
         String filename = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
         String filePath = Directory + userId;
@@ -53,8 +73,7 @@ public class PostService {
                 .filePath(filePath + "/" + filename)
                 .build();
 
-        Post created =  postRepository.save(newPost);
-        return new PostResponse(created);
+        return postRepository.save(newPost);
     }
 
     public String deletePost(Integer postId, Integer userId) throws UserException {
@@ -81,14 +100,18 @@ public class PostService {
         return postRepository.findById(postId).orElseThrow(() -> new RuntimeException("Post not found"));
     }
 
-    public List<PostResponse> findAllPost() throws IOException {
-        List<PostResponse> responses = new ArrayList<>();
-        List<Post> posts = postRepository.findAll();
-        for(Post post : posts) {
-            PostResponse response = new PostResponse(post);
-            responses.add(response);
-        }
-        return responses;
+//    public List<PostResponse> findAllPost() throws IOException {
+//        List<PostResponse> responses = new ArrayList<>();
+//        List<Post> posts = postRepository.findAll();
+//        for(Post post : posts) {
+//            PostResponse response = new PostResponse(post);
+//            responses.add(response);
+//        }
+//        return responses;
+//    }
+
+    public List<Post> findAllPost() throws IOException {
+        return postRepository.findAll();
     }
 
 

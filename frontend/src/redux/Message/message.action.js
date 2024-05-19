@@ -26,6 +26,8 @@ export const createMessage =
           },
         }
       );
+      console.log("data to send...", data);
+      console.log("data file...", data.file);
       sendMessageToServer(data);
       dispatch({ type: CREATE_MESSAGE_SUCCESS, payload: data });
     } catch (error) {
