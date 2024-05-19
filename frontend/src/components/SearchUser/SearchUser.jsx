@@ -5,6 +5,7 @@ import { searchUser } from "../../redux/Auth/auth.action";
 import { createChat } from "../../redux/Message/message.action";
 
 const SearchUser = () => {
+  const reduxUser = useSelector((store) => store.auth.user);
   const [username, setUsername] = useState("");
   const dispatch = useDispatch();
   const reduxSearchUser = useSelector((store) => store.auth.searchUser);
@@ -24,29 +25,33 @@ const SearchUser = () => {
           placeholder="Search User..."
           onKeyDown={handleSearchUser}
         />
-        {username &&
-          reduxSearchUser.map((user) => (
-            <Card
-              key={user.id}
-              className="absolute w-full z-10 top-[4.5rem] cursor-pointer"
-            >
-              <CardHeader
-                title={user.firstName + " " + user.lastName}
-                subheader={
-                  user.firstName.toLowerCase() +
-                  " " +
-                  user.lastName.toLowerCase()
-                }
-                avatar={
-                  <Avatar src="https://images.pexels.com/photos/1264210/pexels-photo-1264210.jpeg?auto=compress&cs=tinysrgb&w=800" />
-                }
-                onClick={() => {
-                  handleClick(user.id);
-                  setUsername("");
-                }}
-              />
-            </Card>
-          ))}
+        <div className="absolute w-full z-10 top-[4.5rem]">
+          {username &&
+            reduxSearchUser
+              .filter((user) => user.id !== reduxUser.id)
+              .map((user) => (
+                <Card
+                  key={user.id}
+                  className="cursor-pointer hover:text-sky-400"
+                >
+                  <CardHeader
+                    title={user.firstName + " " + user.lastName}
+                    subheader={
+                      user.firstName.toLowerCase() +
+                      " " +
+                      user.lastName.toLowerCase()
+                    }
+                    avatar={
+                      <Avatar src="https://images.pexels.com/photos/1264210/pexels-photo-1264210.jpeg?auto=compress&cs=tinysrgb&w=800" />
+                    }
+                    onClick={() => {
+                      handleClick(user.id);
+                      setUsername("");
+                    }}
+                  />
+                </Card>
+              ))}
+        </div>
       </div>
     </div>
   );
